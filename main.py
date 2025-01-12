@@ -6,6 +6,7 @@ from objects.door import Door
 from objects.enemy import Enemy
 from objects.player import Player
 from objects.wall import Wall
+from objects.bow import Bow
 
 
 if __name__ == "__main__":
@@ -16,8 +17,9 @@ if __name__ == "__main__":
     running = True
     all_sprites = pygame.sprite.Group()
     player_sprites = pygame.sprite.Group()
-
+    bow_sprites = pygame.sprite.Group()
     player = Player((player_sprites, all_sprites))
+    bow = Bow(player.rect.center, (bow_sprites, all_sprites))
 
     while running:
         for event in pygame.event.get():
@@ -27,8 +29,10 @@ if __name__ == "__main__":
         player.moving_event(pygame.key.get_pressed())
         
         screen.fill('pink')
-        all_sprites.draw(screen)
+        player_sprites.draw(screen)
+        bow_sprites.draw(screen)
         player.update(pygame.mouse.get_pos())
+        bow.update(player.rect.center, pygame.mouse.get_pos())
         clock.tick(configs.FPS)
         pygame.display.flip()
 
