@@ -52,11 +52,6 @@ if __name__ == "__main__":
         bow_sprites.draw(screen)
         arrow_sprites.draw(screen)
 
-        for sprite in all_sprites:
-            mask_surface = sprite.mask.to_surface(setcolor=(255, 0, 0, 100), unsetcolor=(0, 0, 0, 0))  # Красный цвет для маски
-            mask_surface.set_alpha(128)  # Полупрозрачность
-            screen.blit(mask_surface, sprite.rect.topleft)
-
         player.update(pygame.mouse.get_pos())
         bow.update(player.rect.center, pygame.mouse.get_pos())
         arrow_sprites.update()
