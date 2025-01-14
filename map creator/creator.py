@@ -4,7 +4,7 @@ import pygame
 level_name = input()
 pygame.init()
 SIZE = WIDTH, HEIGHT = 1000, 840
-screen = pygame.display.set_mode(SIZE)
+screen = pygame.display.set_mode(SIZE, pygame.RESIZABLE)
 pygame.display.set_caption('Редактор уровней')
 clock = pygame.time.Clock()
 FPS = 60
@@ -91,7 +91,7 @@ class Board():
 
 def main():
     running = True
-    board = Board(25, 21)
+    board = Board(46, 25)
     brush = None
     while running:
         for event in pygame.event.get():
