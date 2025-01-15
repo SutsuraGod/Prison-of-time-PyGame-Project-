@@ -1,6 +1,7 @@
 import assets
 import pygame
 import configs
+from groups import items
 
 
 class Player(pygame.sprite.Sprite):
@@ -20,6 +21,7 @@ class Player(pygame.sprite.Sprite):
         ]
         self.image = self.right_images[0]
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
         self.counter_images = 0
 
         super().__init__(*groups)
@@ -74,9 +76,13 @@ class Player(pygame.sprite.Sprite):
         # new_x = self.rect.x
         # new_y = self.rect.y
 
-        if pygame.sprite.spritecollide(self, self.level.collision(), dokill=False):
-            self.rect.x = was_x
-            self.rect.y = was_y
+        # if pygame.sprite.spritecollide(self, self.level.collision(), dokill=False):
+        #     self.rect.x = was_x
+        #     self.rect.y = was_y
+        for sprite in items:
+            if pygame.sprite.collide_mask(self, sprite):
+                self.rect.x = was_x
+                self.rect.y = was_y
 
             
 

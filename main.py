@@ -8,6 +8,7 @@ from objects.player import Player
 from objects.wall import Wall
 from objects.bow import Bow
 from objects.arrow import Arrow
+from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites
 
 from board import Level
 
@@ -22,11 +23,6 @@ if __name__ == "__main__":
     pygame.display.set_caption('Prison of Time')
     clock = pygame.time.Clock()
     running = True
-
-    all_sprites = pygame.sprite.Group()
-    player_sprites = pygame.sprite.Group()
-    bow_sprites = pygame.sprite.Group()
-    arrow_sprites = pygame.sprite.Group()
 
     level = Level(r"data\levels\level_46_25.txt", screen, all_sprites)
 

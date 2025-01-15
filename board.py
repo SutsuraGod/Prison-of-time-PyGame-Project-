@@ -8,6 +8,7 @@ from objects.player import Player
 from objects.wall import Wall
 from objects.bow import Bow
 from objects.arrow import Arrow
+from groups import items, collis
 
 
 
@@ -18,8 +19,8 @@ class Level():
         with open(file, encoding="utf-8", mode="r") as fl:
             map = [x.strip() for x in fl.readlines()]
 
-        self.items = pygame.sprite.Group()
-        self.collis = pygame.sprite.Group()
+        # self.items = pygame.sprite.Group()
+        # self.collis = pygame.sprite.Group()
         
         self.screen = screen
         self.m = len(map[0])
@@ -33,17 +34,17 @@ class Level():
                 sdv = (pos * self.siz + 80, lay * self.siz + 60)
 
                 if map[lay][pos] == "%":
-                    Barrier(sdv, (self.items, self.collis, all_sprites))
+                    Barrier(sdv, (items, collis, all_sprites))
                 if map[lay][pos] == "#":
-                    Wall(sdv, (self.items, self.collis, all_sprites))
+                    Wall(sdv, (items, collis, all_sprites))
 
-        self.items.draw(screen)
+        items.draw(screen)
 
     def draw(self):
-        self.items.draw(self.screen)
+        items.draw(self.screen)
 
     def collision(self):
-        return self.collis
+        return collis
 
 if __name__ == "__main__":
 
