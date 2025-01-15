@@ -15,6 +15,8 @@ class Arrow(pygame.sprite.Sprite):
         self.start_image = assets.load_sprite('arrow.png', colorkey=-1)
         self.start_rect = self.start_image.get_rect(center=spawn_pos)
 
+        self.mask = pygame.mask.Mask((10, 10))
+
         self.angle = math.degrees(math.atan2(self.target_y - self.start_rect.centery, self.target_x - self.start_rect.centerx))
         self.image = pygame.transform.rotate(self.start_image, -self.angle + 45)
         self.rect = self.image.get_rect(center=self.start_rect.center)
