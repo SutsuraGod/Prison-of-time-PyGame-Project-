@@ -2,7 +2,7 @@ import assets
 import pygame
 import configs
 import math
-
+from groups import collis
 
 class Arrow(pygame.sprite.Sprite):
     def __init__(self, spawn_pos, target_pos, *groups):
@@ -15,7 +15,7 @@ class Arrow(pygame.sprite.Sprite):
         self.start_image = assets.load_sprite('arrow.png', colorkey=-1)
         self.start_rect = self.start_image.get_rect(center=spawn_pos)
 
-        self.mask = pygame.mask.Mask((10, 10))
+        self.mask = pygame.mask.from_surface(self.start_image)
 
         self.angle = math.degrees(math.atan2(self.target_y - self.start_rect.centery, self.target_x - self.start_rect.centerx))
         self.image = pygame.transform.rotate(self.start_image, -self.angle + 45)
@@ -36,5 +36,9 @@ class Arrow(pygame.sprite.Sprite):
             self.cur_x += step_x
             self.cur_y += step_y
             self.rect.center = self.cur_x, self.cur_y
+
+            if pygame.sprite.spritecollide(self, collis, False):
+                self.kill()
+
         else:    
             self.kill()

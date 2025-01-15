@@ -7,7 +7,7 @@ class Barrier(pygame.sprite.Sprite):
         super().__init__(*groups)
 
         self.image = assets.load_sprite('wall_down.png')
-        self.mask = pygame.mask.from_surface(self.image)
+        #self.mask = pygame.mask.from_surface(self.image)
         
         self.rect = self.image.get_rect()
         self.rect.center = sdv

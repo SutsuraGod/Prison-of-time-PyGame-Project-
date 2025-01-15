@@ -8,6 +8,7 @@ from objects.player import Player
 from objects.wall import Wall
 from objects.bow import Bow
 from objects.arrow import Arrow
+from objects.void import Void
 from groups import items, collis
 
 
@@ -37,6 +38,9 @@ class Level():
                     Barrier(sdv, (items, collis, all_sprites))
                 if map[lay][pos] == "#":
                     Wall(sdv, (items, collis, all_sprites))
+                if map[lay][pos] == ".":
+                    Void(sdv, (items, all_sprites)) 
+
 
         items.draw(screen)
 

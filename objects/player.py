@@ -1,13 +1,12 @@
 import assets
 import pygame
 import configs
-from groups import items
+from groups import items, collis
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, level, x, y, *groups):
         self.level = level
-        self.mask = pygame.mask.Mask((10, 10))
         self.right_images = [
             assets.load_sprite('player1.png', colorkey=-1),
             assets.load_sprite('player2.png', colorkey=-1),
@@ -73,40 +72,7 @@ class Player(pygame.sprite.Sprite):
         elif keys[pygame.K_d]:
             self.rect.x += self.v
         
-        # new_x = self.rect.x
-        # new_y = self.rect.y
-
-        # if pygame.sprite.spritecollide(self, self.level.collision(), dokill=False):
-        #     self.rect.x = was_x
-        #     self.rect.y = was_y
-        for sprite in items:
+        for sprite in collis:
             if pygame.sprite.collide_mask(self, sprite):
                 self.rect.x = was_x
                 self.rect.y = was_y
-
-            
-
-        #     now_x = was_x
-        #     now_y = was_y
-
-        #     while (new_x - was_x) or (new_y - was_y):
-
-        #         self.rect.x = now_x
-        #         self.rect.y = now_y
-
-        #         if not pygame.sprite.spritecollide(self, self.level.collision(), dokill=False):
-
-        #             now_x += (new_x - was_x) * 0.01
-        #             now_y += (new_y - was_y) * 0.01
-                
-        #         else:
-
-        #             now_x -= (new_x - was_x) * 0.01
-        #             now_y -= (new_y - was_y) * 0.01
-        #             break
-            
-        #     print(now_x, now_y)
-
-        #     self.rect.x = now_x
-        #     self.rect.y = now_y
-    

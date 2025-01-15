@@ -8,7 +8,7 @@ from objects.player import Player
 from objects.wall import Wall
 from objects.bow import Bow
 from objects.arrow import Arrow
-from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites
+from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, collis
 
 from board import Level
 
@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
         player.moving_event(pygame.key.get_pressed())
         
-        screen.fill('grey')
+        screen.fill('black')
         level.draw()
 
 
