@@ -10,4 +10,4 @@ class Wall(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
         self.rect = self.image.get_rect()
-        self.rect.center = sdv
+        self.rect.topleft = sdv

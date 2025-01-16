@@ -6,3 +6,6 @@ bow_sprites = pygame.sprite.Group()
 arrow_sprites = pygame.sprite.Group()
 items = pygame.sprite.Group()
 collis = pygame.sprite.Group()
+doors = pygame.sprite.Group()
+levels = []
+current_level = []

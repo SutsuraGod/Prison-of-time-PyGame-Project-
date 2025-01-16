@@ -1,12 +1,12 @@
 import assets
 import pygame
 import configs
-from groups import items, collis
+import groups
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, level, x, y, *groups):
-        self.level = level
+    def __init__(self, x, y, *groups):
+        # self.level = level
         self.right_images = [
             assets.load_sprite('player1.png', colorkey=-1),
             assets.load_sprite('player2.png', colorkey=-1),
@@ -71,8 +71,12 @@ class Player(pygame.sprite.Sprite):
             self.rect.x -= self.v
         elif keys[pygame.K_d]:
             self.rect.x += self.v
-        
-        for sprite in collis:
-            if pygame.sprite.collide_mask(self, sprite):
-                self.rect.x = was_x
-                self.rect.y = was_y
+        if groups.current_level:
+            for sprite in groups.current_level.objects:
+                if pygame.sprite.collide_mask(self, sprite):
+                    self.rect.x = was_x
+                    self.rect.y = was_y
+
+    def update_position(self, new_x, new_y):
+        self.rect.x = new_x
+        self.rect.y = new_y

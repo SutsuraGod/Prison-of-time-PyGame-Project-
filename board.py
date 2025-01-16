@@ -9,14 +9,15 @@ from objects.wall import Wall
 from objects.bow import Bow
 from objects.arrow import Arrow
 from objects.void import Void
-from groups import items, collis
+from groups import items, collis, player_sprites, levels
+from random import randint
 
 
 
 class Level():
 
     def __init__(self, file, screen, all_sprites):
-        
+        self.objects = []
         with open(file, encoding="utf-8", mode="r") as fl:
             map = [x.strip() for x in fl.readlines()]
 
@@ -32,23 +33,39 @@ class Level():
         for lay in range(0, self.n):
             for pos in range(0, self.m):
 
-                sdv = (pos * self.siz + 80, lay * self.siz + 60)
+                sdv = (pos * self.siz, lay * self.siz)
 
                 if map[lay][pos] == "%":
-                    Barrier(sdv, (items, collis, all_sprites))
+                    self.objects.append(Barrier(sdv, (items, collis, all_sprites)))
                 if map[lay][pos] == "#":
-                    Wall(sdv, (items, collis, all_sprites))
-                if map[lay][pos] == ".":
-                    Void(sdv, (items, all_sprites)) 
+                    self.objects.append(Wall(sdv, (items, collis, all_sprites)))
+                # if map[lay][pos] == ".": СКОРЕЕ ВСЕГО МЫ ВООБЩЕ УБЕРЕМ ЭТО!!!
+                #     Void(sdv, (items, all_sprites))
+                if map[lay][pos] == '@':
+                    if configs.player is None:
+                        configs.player = Player(sdv[0], sdv[1], (player_sprites, all_sprites))
+                    else:
+                        configs.player.update_position(sdv[0], sdv[1])
+                if map[lay][pos] == '|':
+                    self.objects.append(Door(sdv, (items, collis, all_sprites)))
 
 
-        items.draw(screen)
+        # items.draw(screen)
 
     def draw(self):
-        items.draw(self.screen)
+        for obj in self.objects:
+            self.screen.blit(obj.image, obj.rect)
 
     def collision(self):
         return collis
+
+
+def generate_level(screen, all_sprites):
+    levels.append(Level(f"data/levels/save_levels/start_room.txt", screen, all_sprites))
+    for _ in range(4):
+        levels.append(Level(f'data/levels/room_{randint(1, 10)}.txt', screen, all_sprites))
+    levels.append(Level(f"data/levels/save_levels/chest_room.txt", screen, all_sprites))
+
 
 if __name__ == "__main__":
 
