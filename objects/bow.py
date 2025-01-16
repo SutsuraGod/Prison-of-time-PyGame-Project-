@@ -12,7 +12,7 @@ class Bow(pygame.sprite.Sprite):
         self.angle = 0
         self.image = self.start_image
         self.rect = self.image.get_rect(center=self.start_rect.center)
-
+        self.mask = pygame.mask.Mask((10, 10))
         super().__init__(*groups)
 
     def update(self, player_pos, mouse_pos):

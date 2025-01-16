@@ -8,6 +8,15 @@ from objects.player import Player
 from objects.wall import Wall
 from objects.bow import Bow
 from objects.arrow import Arrow
+import groups
+from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, levels, doors
+
+
+from board import Level, generate_level
+
+# def draw_mask(surface, mask, rect):
+#         mask_surface = mask.to_surface(setcolor=(255, 0, 0), unsetcolor=(0, 0, 0, 0))
+#         surface.blit(mask_surface, rect.topleft)
 
 
 if __name__ == "__main__":
@@ -17,13 +26,10 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
     running = True
 
-    all_sprites = pygame.sprite.Group()
-    player_sprites = pygame.sprite.Group()
-    bow_sprites = pygame.sprite.Group()
-    arrow_sprites = pygame.sprite.Group()
+    generate_level(screen, all_sprites)
+    groups.current_level = levels[0]
 
-    player = Player((player_sprites, all_sprites))
-    bow = Bow(player.rect.center, (bow_sprites, all_sprites))
+    bow = Bow(configs.player.rect.center, (bow_sprites, all_sprites))
 
     while running:
         for event in pygame.event.get():
@@ -32,19 +38,22 @@ if __name__ == "__main__":
             
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    Arrow(player.rect.center, event.pos, (arrow_sprites, all_sprites))
+                    Arrow(configs.player.rect.center, event.pos, (arrow_sprites, all_sprites))
 
-        player.moving_event(pygame.key.get_pressed())
-        
-        screen.fill('pink')
+        configs.player.moving_event(pygame.key.get_pressed())
+
+        screen.fill('gray')
+
+        groups.current_level.draw() 
         player_sprites.draw(screen)
         bow_sprites.draw(screen)
         arrow_sprites.draw(screen)
 
-        player.update(pygame.mouse.get_pos())
-        bow.update(player.rect.center, pygame.mouse.get_pos())
+        configs.player.update(pygame.mouse.get_pos())
+        bow.update(configs.player.rect.center, pygame.mouse.get_pos())
         arrow_sprites.update()
+
         clock.tick(configs.FPS)
         pygame.display.flip()
-        print(len(arrow_sprites))
+
     pygame.quit()

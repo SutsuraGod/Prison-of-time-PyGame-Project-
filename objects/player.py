@@ -1,10 +1,12 @@
 import assets
 import pygame
 import configs
+import groups
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, *groups):
+    def __init__(self, x, y, *groups):
+        # self.level = level
         self.right_images = [
             assets.load_sprite('player1.png', colorkey=-1),
             assets.load_sprite('player2.png', colorkey=-1),
@@ -17,13 +19,17 @@ class Player(pygame.sprite.Sprite):
             pygame.transform.flip(image, True, False) for image in self.right_images
         ]
         self.image = self.right_images[0]
-        self.rect = self.image.get_rect(topleft=(0, 0))
+        self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
         self.counter_images = 0
 
         super().__init__(*groups)
         self.v = 0
         self.max_v = 360 / configs.FPS
         self.a = 5 / configs.FPS
+
+        self.rect.x = x
+        self.rect.y = y
 
     def update(self, mouse_pos):
         x = mouse_pos[0]
@@ -39,6 +45,10 @@ class Player(pygame.sprite.Sprite):
             self.counter_images += 1
 
     def moving_event(self, keys):
+
+        was_x = self.rect.x
+        was_y = self.rect.y
+
         if self.v < self.max_v:
             self.v += self.a
         if keys[pygame.K_w] and keys[pygame.K_d]:
@@ -61,3 +71,23 @@ class Player(pygame.sprite.Sprite):
             self.rect.x -= self.v
         elif keys[pygame.K_d]:
             self.rect.x += self.v
+        
+        if groups.current_level:
+            for sprite in groups.current_level.objects:
+                if pygame.sprite.collide_mask(self, sprite):
+                    self.rect.x = was_x
+                    self.rect.y = was_y
+                
+        for door in groups.doors:
+            if pygame.sprite.collide_rect(self, door):
+                    if len(groups.levels) > groups.levels.index(groups.current_level) + 1 and configs.SCREEN_WIDTH // 2 < self.rect.x:
+                        groups.current_level = groups.levels[groups.levels.index(groups.current_level) + 1]
+                        self.update_position((configs.SCREEN_WIDTH // configs.CELL_SIZE) * 2, (configs.SCREEN_HEIGHT // configs.CELL_SIZE) * 19)
+                    elif len(groups.levels) > groups.levels.index(groups.current_level) - 1 and configs.SCREEN_WIDTH // 2 > self.rect.x:
+                        groups.current_level = groups.levels[groups.levels.index(groups.current_level) - 1]
+                        self.update_position((configs.SCREEN_WIDTH // configs.CELL_SIZE) * 34, (configs.SCREEN_HEIGHT // configs.CELL_SIZE) * 19)
+                    break
+
+    def update_position(self, new_x, new_y):
+        self.rect.x = new_x
+        self.rect.y = new_y

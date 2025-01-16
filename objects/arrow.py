@@ -2,7 +2,7 @@ import assets
 import pygame
 import configs
 import math
-
+import groups
 
 class Arrow(pygame.sprite.Sprite):
     def __init__(self, spawn_pos, target_pos, *groups):
@@ -18,6 +18,7 @@ class Arrow(pygame.sprite.Sprite):
         self.angle = math.degrees(math.atan2(self.target_y - self.start_rect.centery, self.target_x - self.start_rect.centerx))
         self.image = pygame.transform.rotate(self.start_image, -self.angle + 45)
         self.rect = self.image.get_rect(center=self.start_rect.center)
+        self.mask = pygame.mask.from_surface(self.image)
     
     def update(self):
         if (self.cur_x >= 0 and self.cur_x <= configs.SCREEN_WIDTH
@@ -34,5 +35,10 @@ class Arrow(pygame.sprite.Sprite):
             self.cur_x += step_x
             self.cur_y += step_y
             self.rect.center = self.cur_x, self.cur_y
+
+            for sprite in groups.current_level.objects:
+                if pygame.sprite.collide_mask(self, sprite):
+                    self.kill()
+
         else:    
             self.kill()
