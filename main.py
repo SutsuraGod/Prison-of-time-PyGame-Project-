@@ -9,7 +9,7 @@ from objects.wall import Wall
 from objects.bow import Bow
 from objects.arrow import Arrow
 import groups
-from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, levels
+from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, levels, doors
 
 
 from board import Level, generate_level
@@ -27,8 +27,8 @@ if __name__ == "__main__":
     running = True
 
     generate_level(screen, all_sprites)
-    groups.current_level = levels[4]
-    print(groups.current_level)
+    groups.current_level = levels[0]
+
     bow = Bow(configs.player.rect.center, (bow_sprites, all_sprites))
 
     while running:
@@ -43,8 +43,8 @@ if __name__ == "__main__":
         configs.player.moving_event(pygame.key.get_pressed())
 
         screen.fill('gray')
-        groups.current_level.draw()
-        
+
+        groups.current_level.draw() 
         player_sprites.draw(screen)
         bow_sprites.draw(screen)
         arrow_sprites.draw(screen)
@@ -52,6 +52,7 @@ if __name__ == "__main__":
         configs.player.update(pygame.mouse.get_pos())
         bow.update(configs.player.rect.center, pygame.mouse.get_pos())
         arrow_sprites.update()
+
         clock.tick(configs.FPS)
         pygame.display.flip()
 

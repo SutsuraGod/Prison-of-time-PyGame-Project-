@@ -9,8 +9,8 @@ from objects.wall import Wall
 from objects.bow import Bow
 from objects.arrow import Arrow
 from objects.void import Void
-from groups import items, collis, player_sprites, levels
-from random import randint
+from groups import items, collis, player_sprites, levels, doors, chests_sprites
+from random import sample
 
 
 
@@ -37,17 +37,17 @@ class Level():
 
                 if map[lay][pos] == "%":
                     self.objects.append(Barrier(sdv, (items, collis, all_sprites)))
-                if map[lay][pos] == "#":
+                elif map[lay][pos] == "#":
                     self.objects.append(Wall(sdv, (items, collis, all_sprites)))
                 # if map[lay][pos] == ".": СКОРЕЕ ВСЕГО МЫ ВООБЩЕ УБЕРЕМ ЭТО!!!
                 #     Void(sdv, (items, all_sprites))
-                if map[lay][pos] == '@':
+                elif map[lay][pos] == '@':
                     if configs.player is None:
                         configs.player = Player(sdv[0], sdv[1], (player_sprites, all_sprites))
-                    else:
-                        configs.player.update_position(sdv[0], sdv[1])
-                if map[lay][pos] == '|':
-                    self.objects.append(Door(sdv, (items, collis, all_sprites)))
+                elif map[lay][pos] == '|':
+                    self.objects.append(Door(sdv, (items, collis, doors, all_sprites)))
+                elif map[lay][pos] == '&':
+                    self.objects.append(Chest(sdv, (items, collis, chests_sprites, all_sprites)))
 
 
         # items.draw(screen)
@@ -62,8 +62,8 @@ class Level():
 
 def generate_level(screen, all_sprites):
     levels.append(Level(f"data/levels/save_levels/start_room.txt", screen, all_sprites))
-    for _ in range(4):
-        levels.append(Level(f'data/levels/room_{randint(1, 10)}.txt', screen, all_sprites))
+    for i in sample(range(1, 11), 4):
+        levels.append(Level(f'data/levels/room_{i}.txt', screen, all_sprites))
     levels.append(Level(f"data/levels/save_levels/chest_room.txt", screen, all_sprites))
 
 
