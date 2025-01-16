@@ -1,5 +1,6 @@
 import pygame
 import configs
+import time
 from objects.barrier import Barrier
 from objects.chest import Chest
 from objects.door import Door
@@ -30,6 +31,7 @@ if __name__ == "__main__":
     groups.current_level = levels[0]
 
     bow = Bow(configs.player.rect.center, (bow_sprites, all_sprites))
+    last_arrow = 0
 
     while running:
         for event in pygame.event.get():
@@ -37,8 +39,9 @@ if __name__ == "__main__":
                 running = False
             
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
+                if event.button == 1 and time.time() - last_arrow > 0.4:
                     Arrow(configs.player.rect.center, event.pos, (arrow_sprites, all_sprites))
+                    last_arrow = time.time()
 
         configs.player.moving_event(pygame.key.get_pressed())
 
