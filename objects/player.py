@@ -86,6 +86,7 @@ class Player(pygame.sprite.Sprite):
                     elif len(groups.levels) > groups.levels.index(groups.current_level) - 1 and configs.SCREEN_WIDTH // 2 > self.rect.x:
                         groups.current_level = groups.levels[groups.levels.index(groups.current_level) - 1]
                         self.update_position((configs.SCREEN_WIDTH // configs.CELL_SIZE) * 34, (configs.SCREEN_HEIGHT // configs.CELL_SIZE) * 19)
+                    groups.arrow_sprites.empty()
                     break
 
     def update_position(self, new_x, new_y):
