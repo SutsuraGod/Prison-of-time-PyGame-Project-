@@ -10,7 +10,7 @@ class Arrow(pygame.sprite.Sprite):
         self.start_x, self.start_y = spawn_pos[0], spawn_pos[1]
         self.cur_x, self.cur_y = spawn_pos[0], spawn_pos[1]
         self.target_x, self.target_y = target_pos[0], target_pos[1]
-        self.speed = 360 // configs.FPS
+        self.speed = 540 // configs.FPS
 
         self.start_image = assets.load_sprite('arrow.png', colorkey=-1)
         self.start_rect = self.start_image.get_rect(center=spawn_pos)
@@ -21,8 +21,8 @@ class Arrow(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
     
     def update(self):
-        if (self.cur_x >= 0 and self.cur_x <= configs.SCREEN_WIDTH
-                and self.cur_y >= 0 and self.cur_y <= configs.SCREEN_HEIGHT):
+        if (self.cur_x >= configs.CELL_SIZE and self.cur_x <= configs.SCREEN_WIDTH - configs.CELL_SIZE
+                and self.cur_y >= configs.CELL_SIZE and self.cur_y <= configs.SCREEN_HEIGHT - configs.CELL_SIZE):
             
             delta_x = self.target_x - self.start_x
             delta_y = self.target_y - self.start_y

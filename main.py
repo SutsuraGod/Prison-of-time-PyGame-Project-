@@ -10,6 +10,7 @@ from objects.bow import Bow
 from objects.arrow import Arrow
 import groups
 from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, levels, doors
+import time
 
 
 from board import Level, generate_level
@@ -17,6 +18,9 @@ from board import Level, generate_level
 # def draw_mask(surface, mask, rect):
 #         mask_surface = mask.to_surface(setcolor=(255, 0, 0), unsetcolor=(0, 0, 0, 0))
 #         surface.blit(mask_surface, rect.topleft)
+def enable_attack():
+    global can_attack
+    can_attack = True
 
 
 if __name__ == "__main__":
@@ -25,6 +29,9 @@ if __name__ == "__main__":
     pygame.display.set_caption('Prison of Time')
     clock = pygame.time.Clock()
     running = True
+    ATTACK_EVENT = pygame.USEREVENT + 1
+    attack_cooldown = 500
+    last_attack_time = 0
 
     generate_level(screen, all_sprites)
     groups.current_level = levels[0]
@@ -36,11 +43,21 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 running = False
             
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    Arrow(configs.player.rect.center, event.pos, (arrow_sprites, all_sprites))
+            # if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # ЛКМ = 1
+            #     current_time = pygame.time.get_ticks()
+            #     if current_time - last_attack_time >= attack_cooldown:
+            #         Arrow(configs.player.rect.center, event.pos, (arrow_sprites, all_sprites))
+            #         last_attack_time = current_time
+        mouse_buttons = pygame.mouse.get_pressed()
+        if mouse_buttons[0]:
+            current_time = pygame.time.get_ticks()
+            if current_time - last_attack_time >= attack_cooldown:
+                Arrow(configs.player.rect.center, pygame.mouse.get_pos(), (arrow_sprites, all_sprites))
+                last_attack_time = current_time
 
-        configs.player.moving_event(pygame.key.get_pressed())
+        keys = pygame.key.get_pressed()
+
+        configs.player.moving_event(keys)
 
         screen.fill('gray')
 
