@@ -13,16 +13,11 @@ from groups import items, collis, player_sprites, levels, doors, chests_sprites
 from random import sample
 
 
-
 class Level():
-
     def __init__(self, file, screen, all_sprites):
         self.objects = []
         with open(file, encoding="utf-8", mode="r") as fl:
             map = [x.strip() for x in fl.readlines()]
-
-        # self.items = pygame.sprite.Group()
-        # self.collis = pygame.sprite.Group()
         
         self.screen = screen
         self.m = len(map[0])
@@ -48,10 +43,7 @@ class Level():
                     self.objects.append(Door(sdv, (items, collis, doors, all_sprites)))
                 elif map[lay][pos] == '&':
                     self.objects.append(Chest(sdv, (items, collis, chests_sprites, all_sprites)))
-
-
         # items.draw(screen)
-
     def draw(self):
         for obj in self.objects:
             self.screen.blit(obj.image, obj.rect)

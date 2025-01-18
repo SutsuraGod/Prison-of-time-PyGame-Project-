@@ -75,19 +75,21 @@ class Player(pygame.sprite.Sprite):
         if groups.current_level:
             for sprite in groups.current_level.objects:
                 if pygame.sprite.collide_mask(self, sprite):
+                    # if sprite.__class__.__name__ == "Chest":
+                    #     sprite.open()
                     self.rect.x = was_x
                     self.rect.y = was_y
                 
         for door in groups.doors:
             if pygame.sprite.collide_rect(self, door):
-                    if len(groups.levels) > groups.levels.index(groups.current_level) + 1 and configs.SCREEN_WIDTH // 2 < self.rect.x:
-                        groups.current_level = groups.levels[groups.levels.index(groups.current_level) + 1]
-                        self.update_position((configs.SCREEN_WIDTH // configs.CELL_SIZE) * 2, (configs.SCREEN_HEIGHT // configs.CELL_SIZE) * 19)
-                    elif len(groups.levels) > groups.levels.index(groups.current_level) - 1 and configs.SCREEN_WIDTH // 2 > self.rect.x:
-                        groups.current_level = groups.levels[groups.levels.index(groups.current_level) - 1]
-                        self.update_position((configs.SCREEN_WIDTH // configs.CELL_SIZE) * 34, (configs.SCREEN_HEIGHT // configs.CELL_SIZE) * 19)
-                    groups.arrow_sprites.empty()
-                    break
+                if len(groups.levels) > groups.levels.index(groups.current_level) + 1 and configs.SCREEN_WIDTH // 2 < self.rect.x:
+                    groups.current_level = groups.levels[groups.levels.index(groups.current_level) + 1]
+                    self.update_position((configs.SCREEN_WIDTH // configs.CELL_SIZE) * 2, (configs.SCREEN_HEIGHT // configs.CELL_SIZE) * 19)
+                elif len(groups.levels) > groups.levels.index(groups.current_level) - 1 and configs.SCREEN_WIDTH // 2 > self.rect.x:
+                    groups.current_level = groups.levels[groups.levels.index(groups.current_level) - 1]
+                    self.update_position((configs.SCREEN_WIDTH // configs.CELL_SIZE) * 34, (configs.SCREEN_HEIGHT // configs.CELL_SIZE) * 19)
+                groups.arrow_sprites.empty()
+                break
 
     def update_position(self, new_x, new_y):
         self.rect.x = new_x
