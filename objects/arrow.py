@@ -8,5 +8,5 @@ class Arrow(Projectile):
     def update(self):
         return super().update()
     
-    def damage(self):
-        return super().damage()
+    def damage(self, obj):
+        return super().damage(obj)

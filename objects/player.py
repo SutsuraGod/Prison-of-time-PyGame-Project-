@@ -7,6 +7,7 @@ import groups
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, *groups):
         # self.level = level
+        self.health = 5
         self.right_images = [
             assets.load_sprite('player1.png', colorkey=-1),
             assets.load_sprite('player2.png', colorkey=-1),
@@ -32,6 +33,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = y
 
     def update(self, mouse_pos):
+        if self.health <= 0:
+            self.kill()
         x = mouse_pos[0]
         if x < self.rect.centerx:
             if self.counter_images % 6 == 0:
