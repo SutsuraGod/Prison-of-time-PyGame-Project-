@@ -9,5 +9,6 @@ collis = pygame.sprite.Group()
 doors = pygame.sprite.Group()
 chests_sprites = pygame.sprite.Group()
 spell_sprites = pygame.sprite.Group()
+enemy_sprites = pygame.sprite.Group()
 levels = []
 current_level = []

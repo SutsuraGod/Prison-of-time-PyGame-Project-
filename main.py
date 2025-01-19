@@ -11,7 +11,7 @@ from objects.arrow import Arrow
 from objects.fireball import Fireball
 import groups
 from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, levels, chests_sprites
-from groups import spell_sprites
+from groups import spell_sprites, enemy_sprites, collis
 from board import generate_level
 
 # def draw_mask(surface, mask, rect):
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     last_spelling_time = 0
 
     generate_level(screen, all_sprites)
-    groups.current_level = levels[4]
+    groups.current_level = levels[0]
 
     bow = Bow(configs.player.rect.center, (bow_sprites, all_sprites))
 
@@ -61,16 +61,21 @@ if __name__ == "__main__":
 
         screen.fill('gray')
 
-        groups.current_level.draw()
+        groups.current_level.draw() # теперь враги рисуются здесь
         player_sprites.draw(screen)
         bow_sprites.draw(screen)
         arrow_sprites.draw(screen)
         spell_sprites.draw(screen)
+        for i in range(len(groups.current_level.enemies)):
+                enemy = groups.current_level.enemies[i]
+                enemy.move(configs.player.rect, groups.current_level.objects, configs.player.rect.center)
+                groups.current_level.enemies[i] = enemy
 
         configs.player.update(pygame.mouse.get_pos())
         bow.update(configs.player.rect.center, pygame.mouse.get_pos())
         arrow_sprites.update()
         spell_sprites.update()
+        # enemy_sprites.update(configs.player.rect, groups.current_level.objects, configs.player.rect.center)
         if groups.levels.index(groups.current_level) == 5:
             chests_sprites.update(configs.player.rect.center, keys, screen)
 
