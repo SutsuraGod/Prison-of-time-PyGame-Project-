@@ -7,7 +7,6 @@ from objects.enemy import Enemy
 from objects.player import Player
 from objects.wall import Wall
 from objects.bow import Bow
-from objects.arrow import Arrow
 from objects.void import Void
 from groups import items, collis, player_sprites, levels, doors, chests_sprites
 from random import sample

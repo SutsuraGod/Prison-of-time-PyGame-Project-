@@ -75,8 +75,6 @@ class Player(pygame.sprite.Sprite):
         if groups.current_level:
             for sprite in groups.current_level.objects:
                 if pygame.sprite.collide_mask(self, sprite):
-                    # if sprite.__class__.__name__ == "Chest":
-                    #     sprite.open()
                     self.rect.x = was_x
                     self.rect.y = was_y
                 
@@ -89,6 +87,7 @@ class Player(pygame.sprite.Sprite):
                     groups.current_level = groups.levels[groups.levels.index(groups.current_level) - 1]
                     self.update_position((configs.SCREEN_WIDTH // configs.CELL_SIZE) * 34, (configs.SCREEN_HEIGHT // configs.CELL_SIZE) * 19)
                 groups.arrow_sprites.empty()
+                groups.spell_sprites.empty()
                 break
 
     def update_position(self, new_x, new_y):
