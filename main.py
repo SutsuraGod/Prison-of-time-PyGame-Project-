@@ -8,8 +8,10 @@ from objects.player import Player
 from objects.wall import Wall
 from objects.bow import Bow
 from objects.arrow import Arrow
+from objects.fireball import Fireball
 import groups
 from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, levels, chests_sprites
+from groups import spell_sprites
 from board import generate_level
 
 # def draw_mask(surface, mask, rect):
@@ -25,6 +27,8 @@ if __name__ == "__main__":
     ATTACK_EVENT = pygame.USEREVENT + 1
     attack_cooldown = 500
     last_attack_time = 0
+    spell_cooldown = 1000
+    last_spelling_time = 0
 
     generate_level(screen, all_sprites)
     groups.current_level = levels[4]
@@ -38,12 +42,20 @@ if __name__ == "__main__":
 
         mouse_buttons = pygame.mouse.get_pressed()
         if mouse_buttons[0]:
-            current_time = pygame.time.get_ticks()
-            if current_time - last_attack_time >= attack_cooldown:
-                Arrow(configs.player.rect.center, pygame.mouse.get_pos(), (arrow_sprites, all_sprites))
-                last_attack_time = current_time
+            current_attack_time = pygame.time.get_ticks()
+            if current_attack_time - last_attack_time >= attack_cooldown:
+                Arrow(filename='arrow.png', spawn_pos=configs.player.rect.center,
+                    target_pos=pygame.mouse.get_pos(), normal_angle=45, groups=(arrow_sprites, all_sprites))
+                last_attack_time = current_attack_time
 
         keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_q]:
+            current_spelling_time = pygame.time.get_ticks()
+            if current_spelling_time - last_spelling_time >= spell_cooldown:
+                Fireball(filename='fireball.png', spawn_pos=configs.player.rect.center,
+                        target_pos=pygame.mouse.get_pos(), normal_angle=270, groups=(spell_sprites, all_sprites))
+                last_spelling_time = current_spelling_time
 
         configs.player.moving_event(keys)
 
@@ -53,10 +65,12 @@ if __name__ == "__main__":
         player_sprites.draw(screen)
         bow_sprites.draw(screen)
         arrow_sprites.draw(screen)
+        spell_sprites.draw(screen)
 
         configs.player.update(pygame.mouse.get_pos())
         bow.update(configs.player.rect.center, pygame.mouse.get_pos())
         arrow_sprites.update()
+        spell_sprites.update()
         if groups.levels.index(groups.current_level) == 5:
             chests_sprites.update(configs.player.rect.center, keys, screen)
 
