@@ -8,13 +8,14 @@ from objects.player import Player
 from objects.wall import Wall
 from objects.bow import Bow
 from objects.void import Void
-from groups import items, collis, player_sprites, levels, doors, chests_sprites
+from groups import items, collis, player_sprites, levels, doors, chests_sprites, enemy_sprites
 from random import sample
 
 
 class Level():
     def __init__(self, file, screen, all_sprites):
         self.objects = []
+        self.enemies = []
         with open(file, encoding="utf-8", mode="r") as fl:
             map = [x.strip() for x in fl.readlines()]
         
@@ -29,12 +30,10 @@ class Level():
 
                 sdv = (pos * self.siz, lay * self.siz)
 
-                if map[lay][pos] == "%":
+                if map[lay][pos] == '%':
                     self.objects.append(Barrier(sdv, (items, collis, all_sprites)))
-                elif map[lay][pos] == "#":
+                elif map[lay][pos] == '#':
                     self.objects.append(Wall(sdv, (items, collis, all_sprites)))
-                # if map[lay][pos] == ".": СКОРЕЕ ВСЕГО МЫ ВООБЩЕ УБЕРЕМ ЭТО!!!
-                #     Void(sdv, (items, all_sprites))
                 elif map[lay][pos] == '@':
                     if configs.player is None:
                         configs.player = Player(sdv[0], sdv[1], (player_sprites, all_sprites))
@@ -42,10 +41,14 @@ class Level():
                     self.objects.append(Door(sdv, (items, collis, doors, all_sprites)))
                 elif map[lay][pos] == '&':
                     self.objects.append(Chest(sdv, (items, collis, chests_sprites, all_sprites)))
+                elif map[lay][pos] == '!':
+                    self.enemies.append(Enemy(sdv[0], sdv[1], (collis, enemy_sprites, all_sprites)))
         # items.draw(screen)
     def draw(self):
         for obj in self.objects:
             self.screen.blit(obj.image, obj.rect)
+        for enemy in self.enemies:
+            self.screen.blit(enemy.image, enemy.rect)
 
     def collision(self):
         return collis

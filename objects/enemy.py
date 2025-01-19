@@ -5,8 +5,8 @@ import random
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
+    def __init__(self, x, y, *groups):
+        super().__init__(*groups)
         self.right_images = [assets.load_sprite('run1.png'),
                              assets.load_sprite('run2.png'),
                              assets.load_sprite('run3.png'),
@@ -19,11 +19,13 @@ class Enemy(pygame.sprite.Sprite):
         self.left_images = [pygame.transform.flip(image, True, False) for image in self.right_images]
 
         self.image = self.right_images[0]
+        self.image = pygame.transform.scale(self.image, (100, 100))
         self.counter_images = 0
 
-        self.rect = self.image.get_rect(topleft=(x, y))
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
         self.mask = pygame.mask.from_surface(self.image)
-        self.speed = 3
+        self.speed = 180 // configs.FPS
 
         # переменные для реализаци движения врага по произвольной траектории,
         # которая меняется через некоторые промежутки времени
@@ -49,11 +51,13 @@ class Enemy(pygame.sprite.Sprite):
                 if self.counter_images % 6 == 0:
                     self.left_images.append(self.left_images.pop(0))
                     self.image = self.left_images[0]
+                    self.image = pygame.transform.scale(self.image, (100, 100))
                 self.counter_images += 1
             else:
                 if self.counter_images % 6 == 0:
                     self.right_images.append(self.right_images.pop(0))
                     self.image = self.right_images[0]
+                    self.image = pygame.transform.scale(self.image, (100, 100))
                 self.counter_images += 1
 
             # Если враг достиг игрока, останавливаем движение
@@ -87,11 +91,13 @@ class Enemy(pygame.sprite.Sprite):
                 if self.counter_images % 6 == 0:
                     self.left_images.append(self.left_images.pop(0))
                     self.image = self.left_images[0]
+                    self.image = pygame.transform.scale(self.image, (100, 100))
                 self.counter_images += 1
             else:
                 if self.counter_images % 6 == 0:
                     self.right_images.append(self.right_images.pop(0))
                     self.image = self.right_images[0]
+                    self.image = pygame.transform.scale(self.image, (100, 100))
                 self.counter_images += 1
             #
 
