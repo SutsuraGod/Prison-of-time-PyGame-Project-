@@ -14,9 +14,6 @@ from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, leve
 from groups import spell_sprites, enemy_sprites, collis
 from board import generate_level
 
-# def draw_mask(surface, mask, rect):
-#         mask_surface = mask.to_surface(setcolor=(255, 0, 0), unsetcolor=(0, 0, 0, 0))
-#         surface.blit(mask_surface, rect.topleft)
 
 if __name__ == "__main__":
     pygame.init()
@@ -61,14 +58,16 @@ if __name__ == "__main__":
 
         screen.fill('gray')
 
-        groups.current_level.draw() # теперь враги рисуются здесь
+        groups.current_level.draw()
         player_sprites.draw(screen)
         bow_sprites.draw(screen)
         arrow_sprites.draw(screen)
         spell_sprites.draw(screen)
-        for i in range(len(groups.current_level.enemies)):
+        for i in range(last_len := len(groups.current_level.enemies)):
                 enemy = groups.current_level.enemies[i]
-                enemy.move(configs.player.rect, groups.current_level.objects, configs.player.rect.center)
+                enemy.move(configs.player, configs.player.rect, groups.current_level.objects, configs.player.rect.center)
+                if last_len != len(groups.current_level.enemies):
+                    break
                 groups.current_level.enemies[i] = enemy
 
         configs.player.update(pygame.mouse.get_pos())
@@ -78,6 +77,9 @@ if __name__ == "__main__":
         # enemy_sprites.update(configs.player.rect, groups.current_level.objects, configs.player.rect.center)
         if groups.levels.index(groups.current_level) == 5:
             chests_sprites.update(configs.player.rect.center, keys, screen)
+        
+        if configs.player.health <= 0:
+            pygame.quit()
 
         clock.tick(configs.FPS)
         pygame.display.flip()

@@ -2,17 +2,17 @@ import assets
 import pygame
 import configs
 import random
-
+import groups
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y, *groups):
         super().__init__(*groups)
+        self.health = 4
+        self.last_enemy_attack_time = 0
+        self.cooldown_attack = 1000
         self.right_images = [assets.load_sprite('run1.png'),
                              assets.load_sprite('run2.png'),
                              assets.load_sprite('run3.png'),
-                             assets.load_sprite('run4.png'),
-                             assets.load_sprite('run5.png'),
-                             assets.load_sprite('run6.png'),
                              assets.load_sprite('run7.png'),
                              assets.load_sprite('run8.png'),
                              ]
@@ -32,7 +32,10 @@ class Enemy(pygame.sprite.Sprite):
         self.direction1 = pygame.math.Vector2(random.uniform(-1, 1), random.uniform(-1, 1)).normalize()
         self.change_time = pygame.time.get_ticks() + random.randint(100000, 300000)
 
-    def move(self, player_rect, obstacles, player_pos):  # метод для реализации движения врага
+    def move(self, player, player_rect, obstacles, player_pos):  # метод для реализации движения врага
+        if self.health <= 0:
+            groups.current_level.enemies.remove(self)
+            self.kill()
         # рассчитываем расстояние до игрока простым способом
         distance_to_player = ((player_pos[0] - self.rect.x) ** 2 + (player_pos[1] - self.rect.y) ** 2) ** 0.5
         # если расстояние менее 400, то враг переходит в состояние преследования
@@ -52,22 +55,33 @@ class Enemy(pygame.sprite.Sprite):
                     self.left_images.append(self.left_images.pop(0))
                     self.image = self.left_images[0]
                     self.image = pygame.transform.scale(self.image, (100, 100))
+                    self.mask = pygame.mask.from_surface(self.image)
                 self.counter_images += 1
             else:
                 if self.counter_images % 6 == 0:
                     self.right_images.append(self.right_images.pop(0))
                     self.image = self.right_images[0]
                     self.image = pygame.transform.scale(self.image, (100, 100))
+                    self.mask = pygame.mask.from_surface(self.image)
                 self.counter_images += 1
 
             # Если враг достиг игрока, останавливаем движение
-            if direction.length() == 0:
+            if direction.length() <= 10:
+                current_enemy_attack_time = pygame.time.get_ticks()
+                if current_enemy_attack_time - self.last_enemy_attack_time >= self.cooldown_attack:
+                    player.health -= 1
+                    self.last_enemy_attack_time = current_enemy_attack_time
                 return
 
             direction = direction.normalize()  # Нормализуем, чтобы скорость была постоянной
             new_position = self.rect.center + direction * self.speed  # Двигаем врага
 
             # Проверка столкновений с препятствиями
+            if self.rect.left <= 40 or self.rect.right >= configs.SCREEN_WIDTH - 40:
+                self.direction1.x *= -1
+
+            if self.rect.top <= 40 or self.rect.bottom >= configs.SCREEN_HEIGHT - 40:
+                self.direction1.y *= -1
 
             for obstacle in obstacles:
                 if pygame.sprite.collide_mask(self, obstacle):
@@ -92,12 +106,14 @@ class Enemy(pygame.sprite.Sprite):
                     self.left_images.append(self.left_images.pop(0))
                     self.image = self.left_images[0]
                     self.image = pygame.transform.scale(self.image, (100, 100))
+                    self.mask = pygame.mask.from_surface(self.image)
                 self.counter_images += 1
             else:
                 if self.counter_images % 6 == 0:
                     self.right_images.append(self.right_images.pop(0))
                     self.image = self.right_images[0]
                     self.image = pygame.transform.scale(self.image, (100, 100))
+                    self.mask = pygame.mask.from_surface(self.image)
                 self.counter_images += 1
             #
 
@@ -106,10 +122,10 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.y += self.direction1.y * self.speed
 
             # Проверка столкновения со стенами
-            if self.rect.left < 40 or self.rect.right > configs.SCREEN_WIDTH - 40:
+            if self.rect.left <= 40 or self.rect.right >= configs.SCREEN_WIDTH - 40:
                 self.direction1.x *= -1
 
-            if self.rect.top < 40 or self.rect.bottom > configs.SCREEN_HEIGHT - 40:
+            if self.rect.top <= 40 or self.rect.bottom >= configs.SCREEN_HEIGHT - 40:
                 self.direction1.y *= -1
 
             # Смена направления

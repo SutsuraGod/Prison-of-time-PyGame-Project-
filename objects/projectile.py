@@ -39,11 +39,15 @@ class Projectile(pygame.sprite.Sprite):
 
             for sprite in groups.current_level.objects:
                 if pygame.sprite.collide_mask(self, sprite):
-                    self.damage()
+                    self.kill()
+            
+            for sprite in groups.current_level.enemies:
+                if pygame.sprite.collide_mask(self, sprite):
+                    self.damage(sprite)
                     self.kill()
 
         else:    
             self.kill()
 
-    def damage(self):
-        pass
+    def damage(self, obj):
+        obj.health -= 1

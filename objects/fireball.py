@@ -20,5 +20,5 @@ class Fireball(Projectile):
     def update(self):
         return super().update()
     
-    def damage(self):
-        return super().damage()
+    def damage(self, obj):
+        obj.health -= 2
