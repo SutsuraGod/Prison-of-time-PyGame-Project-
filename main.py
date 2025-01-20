@@ -54,8 +54,9 @@ if __name__ == "__main__":
         if keys[pygame.K_q]:
             current_spelling_time = pygame.time.get_ticks()
             if current_spelling_time - last_spelling_time >= spell_cooldown:
-                Fireball(filename='fireball.png', spawn_pos=configs.player.rect.center,
-                        target_pos=pygame.mouse.get_pos(), normal_angle=270, groups=(spell_sprites, all_sprites))
+                if configs.player.current_spell == 'fireball':
+                    Fireball(filename='fireball.png', spawn_pos=configs.player.rect.center,
+                            target_pos=pygame.mouse.get_pos(), normal_angle=270, groups=(spell_sprites, all_sprites))
                 last_spelling_time = current_spelling_time
 
         configs.player.moving_event(keys)
@@ -80,6 +81,13 @@ if __name__ == "__main__":
                 if last_len != len(groups.current_level.enemies):
                     break
                 groups.current_level.enemies[i] = enemy
+        
+        for i in range(last_len := len(groups.current_level.items)):
+            item = groups.current_level.items[i]
+            item.update(configs.player)
+            if last_len != len(groups.current_level.items):
+                break
+            groups.current_level.items[i] = item
 
         configs.player.update(pygame.mouse.get_pos())
         bow.update(configs.player.rect.center, pygame.mouse.get_pos())

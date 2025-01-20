@@ -16,6 +16,7 @@ class Level():
     def __init__(self, file, screen, all_sprites):
         self.objects = []
         self.enemies = []
+        self.items = []
         with open(file, encoding="utf-8", mode="r") as fl:
             map = [x.strip() for x in fl.readlines()]
         
@@ -49,6 +50,8 @@ class Level():
             self.screen.blit(obj.image, obj.rect)
         for enemy in self.enemies:
             self.screen.blit(enemy.image, enemy.rect)
+        for item in self.items:
+            self.screen.blit(item.image, item.rect)
 
     def collision(self):
         return collis

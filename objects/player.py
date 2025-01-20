@@ -2,6 +2,7 @@ import assets
 import pygame
 import configs
 import groups
+from objects.item import Item
 
 
 class Player(pygame.sprite.Sprite):
@@ -30,6 +31,8 @@ class Player(pygame.sprite.Sprite):
 
         self.rect.x = x
         self.rect.y = y
+
+        self.current_spell = ''
 
     def update(self, mouse_pos):
         if self.health <= 0:
@@ -97,3 +100,14 @@ class Player(pygame.sprite.Sprite):
     def update_position(self, new_x, new_y):
         self.rect.x = new_x
         self.rect.y = new_y
+
+    def set_speed(self, new_speed):
+        self.v += new_speed
+
+    def set_health(self, new_health):
+        self.health += new_health
+
+    def set_spell(self, new_spell):
+        if self.current_spell != '':
+            Item((self.rect.centerx, self.rect.centery - 40), self.current_spell, (groups.items_sprite, groups.all_sprites))
+        self.current_spell = new_spell
