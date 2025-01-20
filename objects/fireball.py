@@ -16,9 +16,10 @@ class Fireball(Projectile):
         self.image = pygame.transform.rotate(self.start_image, -self.angle + self.normal_angle)
         self.rect = self.image.get_rect(center=self.start_rect.center)
         self.mask = pygame.mask.from_surface(self.image)
+        self.dmg = 4
 
     def update(self):
         return super().update()
     
     def damage(self, obj):
-        obj.health -= 2
+        return super().damage(obj)

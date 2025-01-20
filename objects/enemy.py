@@ -77,10 +77,10 @@ class Enemy(pygame.sprite.Sprite):
             new_position = self.rect.center + direction * self.speed  # Двигаем врага
 
             # Проверка столкновений с препятствиями
-            if self.rect.left <= 40 or self.rect.right >= configs.SCREEN_WIDTH - 40:
+            if self.rect.left <= 50 or self.rect.right >= configs.SCREEN_WIDTH - 50:
                 self.direction1.x *= -1
 
-            if self.rect.top <= 40 or self.rect.bottom >= configs.SCREEN_HEIGHT - 40:
+            if self.rect.top <= 50 or self.rect.bottom >= configs.SCREEN_HEIGHT - 50:
                 self.direction1.y *= -1
 
             for obstacle in obstacles:
@@ -122,10 +122,10 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.y += self.direction1.y * self.speed
 
             # Проверка столкновения со стенами
-            if self.rect.left <= 40 or self.rect.right >= configs.SCREEN_WIDTH - 40:
+            if self.rect.left <= 50 or self.rect.right >= configs.SCREEN_WIDTH - 50:
                 self.direction1.x *= -1
 
-            if self.rect.top <= 40 or self.rect.bottom >= configs.SCREEN_HEIGHT - 40:
+            if self.rect.top <= 50 or self.rect.bottom >= configs.SCREEN_HEIGHT - 50:
                 self.direction1.y *= -1
 
             # Смена направления

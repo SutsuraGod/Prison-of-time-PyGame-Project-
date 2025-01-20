@@ -20,6 +20,7 @@ class Projectile(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.start_image, -self.angle + self.normal_angle)
         self.rect = self.image.get_rect(center=self.start_rect.center)
         self.mask = pygame.mask.from_surface(self.image)
+        self.dmg = 1
     
     def update(self):
         if (self.cur_x >= configs.CELL_SIZE and self.cur_x <= configs.SCREEN_WIDTH - configs.CELL_SIZE
@@ -50,4 +51,4 @@ class Projectile(pygame.sprite.Sprite):
             self.kill()
 
     def damage(self, obj):
-        obj.health -= 1
+        obj.health -= self.dmg

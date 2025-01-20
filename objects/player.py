@@ -6,7 +6,6 @@ import groups
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, *groups):
-        # self.level = level
         self.health = 5
         self.right_images = [
             assets.load_sprite('player1.png', colorkey=-1),
@@ -35,6 +34,7 @@ class Player(pygame.sprite.Sprite):
     def update(self, mouse_pos):
         if self.health <= 0:
             self.kill()
+
         x = mouse_pos[0]
         if x < self.rect.centerx:
             if self.counter_images % 6 == 0:
@@ -83,15 +83,16 @@ class Player(pygame.sprite.Sprite):
                 
         for door in groups.doors:
             if pygame.sprite.collide_rect(self, door):
-                if len(groups.levels) > groups.levels.index(groups.current_level) + 1 and configs.SCREEN_WIDTH // 2 < self.rect.x:
-                    groups.current_level = groups.levels[groups.levels.index(groups.current_level) + 1]
-                    self.update_position((configs.SCREEN_WIDTH // configs.CELL_SIZE) * 2, (configs.SCREEN_HEIGHT // configs.CELL_SIZE) * 19)
-                elif len(groups.levels) > groups.levels.index(groups.current_level) - 1 and configs.SCREEN_WIDTH // 2 > self.rect.x:
-                    groups.current_level = groups.levels[groups.levels.index(groups.current_level) - 1]
-                    self.update_position((configs.SCREEN_WIDTH // configs.CELL_SIZE) * 34, (configs.SCREEN_HEIGHT // configs.CELL_SIZE) * 19)
-                groups.arrow_sprites.empty()
-                groups.spell_sprites.empty()
-                break
+                if door.get_status():
+                    if len(groups.levels) > groups.levels.index(groups.current_level) + 1 and configs.SCREEN_WIDTH // 2 < self.rect.x:
+                        groups.current_level = groups.levels[groups.levels.index(groups.current_level) + 1]
+                        self.update_position((configs.SCREEN_WIDTH // configs.CELL_SIZE) * 2, (configs.SCREEN_HEIGHT // configs.CELL_SIZE) * 19)
+                    elif len(groups.levels) > groups.levels.index(groups.current_level) - 1 and configs.SCREEN_WIDTH // 2 > self.rect.x:
+                        groups.current_level = groups.levels[groups.levels.index(groups.current_level) - 1]
+                        self.update_position((configs.SCREEN_WIDTH // configs.CELL_SIZE) * 34, (configs.SCREEN_HEIGHT // configs.CELL_SIZE) * 19)
+                    groups.arrow_sprites.empty()
+                    groups.spell_sprites.empty()
+                    break
 
     def update_position(self, new_x, new_y):
         self.rect.x = new_x

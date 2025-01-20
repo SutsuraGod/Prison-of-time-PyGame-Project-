@@ -1,18 +1,22 @@
 import pygame
 import configs
-from objects.barrier import Barrier
-from objects.chest import Chest
-from objects.door import Door
-from objects.enemy import Enemy
-from objects.player import Player
-from objects.wall import Wall
+import assets
 from objects.bow import Bow
 from objects.arrow import Arrow
 from objects.fireball import Fireball
 import groups
 from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, levels, chests_sprites
-from groups import spell_sprites, enemy_sprites, collis
+from groups import spell_sprites, enemy_sprites, collis, doors
 from board import generate_level
+
+
+def print_hp(screen, player):
+    font = pygame.font.Font(None, 36)
+    text_surface = font.render(f'{player.health}', True, (255, 255, 255))
+    screen.blit(text_surface, (50, 50))
+    hp_image = assets.load_sprite('hp.png')
+    hp_image = pygame.transform.scale2x(hp_image)
+    screen.blit(hp_image, (70, 50))
 
 
 if __name__ == "__main__":
@@ -24,7 +28,7 @@ if __name__ == "__main__":
     ATTACK_EVENT = pygame.USEREVENT + 1
     attack_cooldown = 500
     last_attack_time = 0
-    spell_cooldown = 1000
+    spell_cooldown = 1500
     last_spelling_time = 0
 
     generate_level(screen, all_sprites)
@@ -63,6 +67,13 @@ if __name__ == "__main__":
         bow_sprites.draw(screen)
         arrow_sprites.draw(screen)
         spell_sprites.draw(screen)
+        print_hp(screen, configs.player)
+
+        if not groups.current_level.enemies:
+            configs.fight = False
+        else:
+            configs.fight = True
+            
         for i in range(last_len := len(groups.current_level.enemies)):
                 enemy = groups.current_level.enemies[i]
                 enemy.move(configs.player, configs.player.rect, groups.current_level.objects, configs.player.rect.center)
@@ -74,7 +85,7 @@ if __name__ == "__main__":
         bow.update(configs.player.rect.center, pygame.mouse.get_pos())
         arrow_sprites.update()
         spell_sprites.update()
-        # enemy_sprites.update(configs.player.rect, groups.current_level.objects, configs.player.rect.center)
+        doors.update(configs.fight)
         if groups.levels.index(groups.current_level) == 5:
             chests_sprites.update(configs.player.rect.center, keys, screen)
         
