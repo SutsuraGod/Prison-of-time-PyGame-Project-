@@ -43,7 +43,7 @@ class Level():
                     self.objects.append(Chest(sdv, (items, collis, chests_sprites, all_sprites)))
                 elif map[lay][pos] == '!':
                     self.enemies.append(Enemy(sdv[0], sdv[1], (collis, enemy_sprites, all_sprites)))
-        # items.draw(screen)
+                    
     def draw(self):
         for obj in self.objects:
             self.screen.blit(obj.image, obj.rect)

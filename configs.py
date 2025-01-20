@@ -3,3 +3,4 @@ SCREEN_HEIGHT = 840
 FPS = 60
 CELL_SIZE = 40
 player = None
+fight = False
