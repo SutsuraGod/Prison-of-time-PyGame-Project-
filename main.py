@@ -4,6 +4,7 @@ import assets
 from objects.bow import Bow
 from objects.arrow import Arrow
 from objects.fireball import Fireball
+from objects.icespell import Icespell
 import groups
 from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, levels, chests_sprites
 from groups import spell_sprites, enemy_sprites, collis, doors
@@ -32,7 +33,7 @@ if __name__ == "__main__":
     last_spelling_time = 0
 
     generate_level(screen, all_sprites)
-    groups.current_level = levels[0]
+    groups.current_level = levels[4]
 
     bow = Bow(configs.player.rect.center, (bow_sprites, all_sprites))
 
@@ -55,8 +56,13 @@ if __name__ == "__main__":
             current_spelling_time = pygame.time.get_ticks()
             if current_spelling_time - last_spelling_time >= spell_cooldown:
                 if configs.player.current_spell == 'fireball':
+
                     Fireball(filename='fireball.png', spawn_pos=configs.player.rect.center,
                             target_pos=pygame.mouse.get_pos(), normal_angle=270, groups=(spell_sprites, all_sprites))
+                if configs.player.current_spell == 'icespell':
+                    Icespell(filename='icespell.png', spawn_pos=configs.player.rect.center,
+                            target_pos=pygame.mouse.get_pos(), normal_angle=0, groups=(spell_sprites, all_sprites))
+
                 last_spelling_time = current_spelling_time
 
         configs.player.moving_event(keys)
@@ -81,13 +87,6 @@ if __name__ == "__main__":
                 if last_len != len(groups.current_level.enemies):
                     break
                 groups.current_level.enemies[i] = enemy
-        
-        for i in range(last_len := len(groups.current_level.items)):
-            item = groups.current_level.items[i]
-            item.update(configs.player)
-            if last_len != len(groups.current_level.items):
-                break
-            groups.current_level.items[i] = item
 
         configs.player.update(pygame.mouse.get_pos())
         bow.update(configs.player.rect.center, pygame.mouse.get_pos())

@@ -4,7 +4,7 @@ from objects.projectile import Projectile
 import math
 
 
-class Fireball(Projectile):
+class Icespell(Projectile):
     def __init__(self, filename, spawn_pos, target_pos, normal_angle, groups):
         super().__init__(filename, spawn_pos, target_pos, normal_angle, *groups)
         self.start_image = assets.load_sprite(filename, colorkey=-1)
@@ -16,12 +16,12 @@ class Fireball(Projectile):
         self.image = pygame.transform.rotate(self.start_image, -self.angle + self.normal_angle)
         self.rect = self.image.get_rect(center=self.start_rect.center)
         self.mask = pygame.mask.from_surface(self.image)
-        self.dmg = 2
+        self.dmg = 1
 
     def update(self):
         return super().update()
     
     def damage(self, obj):
-        obj.dot = 'fire'
-        obj.dot_timer = 120
+        obj.dot = 'freeze'
+        obj.dot_timer = 240
         obj.health -= self.dmg

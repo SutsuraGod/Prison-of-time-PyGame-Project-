@@ -7,6 +7,9 @@ import groups
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y, *groups):
         super().__init__(*groups)
+        self.start_health = 4
+        self.start_speed = 180 // configs.FPS
+
         self.health = 4
         self.last_enemy_attack_time = 0
         self.cooldown_attack = 1000
@@ -32,10 +35,26 @@ class Enemy(pygame.sprite.Sprite):
         self.direction1 = pygame.math.Vector2(random.uniform(-1, 1), random.uniform(-1, 1)).normalize()
         self.change_time = pygame.time.get_ticks() + random.randint(100000, 300000)
 
+        self.dot = ''
+        self.dot_timer = 0
+
     def move(self, player, player_rect, obstacles, player_pos):  # метод для реализации движения врага
         if self.health <= 0:
             groups.current_level.enemies.remove(self)
             self.kill()
+        
+        if self.dot_timer % 60 == 0:
+            if self.dot == 'fire':
+                self.health -= 1
+            if self.dot == 'freeze':
+                self.speed = 60 // configs.FPS
+
+        if self.dot_timer != 0:
+            self.dot_timer -= 1
+        
+        if self.dot_timer == 0:
+            self.speed = self.start_speed
+
         # рассчитываем расстояние до игрока простым способом
         distance_to_player = ((player_pos[0] - self.rect.x) ** 2 + (player_pos[1] - self.rect.y) ** 2) ** 0.5
         # если расстояние менее 400, то враг переходит в состояние преследования
