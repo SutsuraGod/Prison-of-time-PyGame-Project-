@@ -33,7 +33,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-        self.current_spell = 'icespell'
+        self.current_spell = ''
 
     def update(self, mouse_pos):
         if self.health <= 0:

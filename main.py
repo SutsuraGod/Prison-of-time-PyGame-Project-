@@ -33,7 +33,7 @@ if __name__ == "__main__":
     last_spelling_time = 0
 
     generate_level(screen, all_sprites)
-    groups.current_level = levels[4]
+    groups.current_level = levels[0]
 
     bow = Bow(configs.player.rect.center, (bow_sprites, all_sprites))
 
