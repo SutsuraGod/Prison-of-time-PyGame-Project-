@@ -16,7 +16,7 @@ class Chest(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = sdv
         self.opened = False
-        self.drop = ['fireball']
+        self.drop = ['fireball', 'icespell']
 
     def update(self, player_pos, keys, screen):
         x, y = player_pos
@@ -34,6 +34,5 @@ class Chest(pygame.sprite.Sprite):
         self.image = assets.load_sprite('chest_opened.png')
         self.image = pygame.transform.scale(self.image, (40, 40))
         item = random.sample(self.drop, 1)
-        print(item)
         groups.current_level.items.append(Item((self.rect.centerx, self.rect.centery + 20), item[0],
                                         (groups.items_sprite, groups.all_sprites)))

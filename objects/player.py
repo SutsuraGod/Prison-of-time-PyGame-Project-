@@ -20,6 +20,7 @@ class Player(pygame.sprite.Sprite):
             pygame.transform.flip(image, True, False) for image in self.right_images
         ]
         self.image = self.right_images[0]
+        self.direction = True
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.counter_images = 0
@@ -60,23 +61,29 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_w] and keys[pygame.K_d]:
             self.rect.x += self.v / (2 ** 0.5)
             self.rect.y -= self.v / (2 ** 0.5)
+            self.direction = True
         elif keys[pygame.K_d] and keys[pygame.K_s]:
             self.rect.x += self.v / (2 ** 0.5)
             self.rect.y += self.v / (2 ** 0.5)
+            self.direction = True
         elif keys[pygame.K_s] and keys[pygame.K_a]:
             self.rect.x -= self.v / (2 ** 0.5)
             self.rect.y += self.v / (2 ** 0.5)
+            self.direction = False
         elif keys[pygame.K_a] and keys[pygame.K_w]:
             self.rect.x -= self.v / (2 ** 0.5)
             self.rect.y -= self.v / (2 ** 0.5)
+            self.direction = False
         elif keys[pygame.K_w]:
             self.rect.y -= self.v
         elif keys[pygame.K_s]:
             self.rect.y += self.v
         elif keys[pygame.K_a]:
             self.rect.x -= self.v
+            self.direction = False
         elif keys[pygame.K_d]:
             self.rect.x += self.v
+            self.direction = True
         
         if groups.current_level:
             for sprite in groups.current_level.objects:
@@ -97,6 +104,16 @@ class Player(pygame.sprite.Sprite):
                     groups.spell_sprites.empty()
                     break
 
+        for item in groups.current_level.items:
+            if pygame.sprite.collide_rect(self, item):
+                if item.type == 'speed':
+                    self.set_speed(60)
+                elif item.type == 'health':
+                    self.set_health(1)
+                else:
+                    self.set_spell(item.type)
+                groups.current_level.items.remove(item)
+
     def update_position(self, new_x, new_y):
         self.rect.x = new_x
         self.rect.y = new_y
@@ -108,6 +125,16 @@ class Player(pygame.sprite.Sprite):
         self.health += new_health
 
     def set_spell(self, new_spell):
-        if self.current_spell != '':
-            Item((self.rect.centerx, self.rect.centery - 40), self.current_spell, (groups.items_sprite, groups.all_sprites))
-        self.current_spell = new_spell
+        if self.current_spell != new_spell:
+            if self.current_spell != '':
+                if self.direction:
+                    groups.current_level.items.append(
+                        Item((self.rect.centerx - 70, self.rect.centery), self.current_spell,
+                            (groups.items_sprite, groups.all_sprites))
+                    )
+                else:
+                    groups.current_level.items.append(
+                        Item((self.rect.centerx + 70, self.rect.centery), self.current_spell,
+                            (groups.items_sprite, groups.all_sprites))
+                    )
+            self.current_spell = new_spell
