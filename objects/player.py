@@ -3,6 +3,7 @@ import pygame
 import configs
 import groups
 from objects.item import Item
+import math
 
 
 class Player(pygame.sprite.Sprite):
@@ -34,6 +35,11 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = y
 
         self.current_spell = ''
+
+        self.max_health = 7
+        self.max_speed = 540 // configs.FPS
+        self.step_speed = 0
+        self.step_health = 0
 
     def update(self, mouse_pos):
         if self.health <= 0:
@@ -106,23 +112,27 @@ class Player(pygame.sprite.Sprite):
 
         for item in groups.current_level.items:
             if pygame.sprite.collide_rect(self, item):
-                if item.type == 'speed':
-                    self.set_speed(60)
-                elif item.type == 'health':
+                if item.type == 'speed' and self.max_speed > self.v:
+                    self.set_speed(30)
+                    groups.current_level.items.remove(item)
+                elif item.type == 'health' and self.max_health != self.health:
                     self.set_health(1)
-                else:
+                    groups.current_level.items.remove(item)
+                elif item.type == 'fireball' or item.type == 'icespell':
                     self.set_spell(item.type)
-                groups.current_level.items.remove(item)
+                    groups.current_level.items.remove(item)
 
     def update_position(self, new_x, new_y):
         self.rect.x = new_x
         self.rect.y = new_y
 
     def set_speed(self, new_speed):
-        self.v += new_speed
+        if self.v < self.max_speed:
+            self.v += (new_speed / configs.FPS) * math.exp(-self.step_speed)
 
     def set_health(self, new_health):
-        self.health += new_health
+        if self.health < self.max_health:
+            self.health += new_health
 
     def set_spell(self, new_spell):
         if self.current_spell != new_spell:

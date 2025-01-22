@@ -10,7 +10,7 @@ class Item(pygame.sprite.Sprite):
         if self.type == 'fireball':
             self.image = assets.load_sprite('fireball.png', -1)
         elif self.type == 'speed':
-            self.image = assets.load_sprite('speed.png')
+            self.image = assets.load_sprite('speed.png', -1)
         elif self.type == 'health':
             self.image = assets.load_sprite('hp.png')
         elif self.type == 'icespell':
