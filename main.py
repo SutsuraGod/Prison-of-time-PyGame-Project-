@@ -13,7 +13,7 @@ from board import generate_level
 
 def print_hp(screen, player):
     font = pygame.font.Font(None, 36)
-    text_surface = font.render(f'{player.health}', True, (255, 255, 255))
+    text_surface = font.render(f'{player.health}', True, (0, 0, 0))
     screen.blit(text_surface, (50, 50))
     hp_image = assets.load_sprite('hp.png')
     hp_image = pygame.transform.scale2x(hp_image)
@@ -56,7 +56,6 @@ if __name__ == "__main__":
             current_spelling_time = pygame.time.get_ticks()
             if current_spelling_time - last_spelling_time >= spell_cooldown:
                 if configs.player.current_spell == 'fireball':
-
                     Fireball(filename='fireball.png', spawn_pos=configs.player.rect.center,
                             target_pos=pygame.mouse.get_pos(), normal_angle=270, groups=(spell_sprites, all_sprites))
                 if configs.player.current_spell == 'icespell':

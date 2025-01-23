@@ -3,6 +3,7 @@ import pygame
 import configs
 import random
 import groups
+from objects.item import Item
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y, *groups):
@@ -41,6 +42,13 @@ class Enemy(pygame.sprite.Sprite):
     def move(self, player, player_rect, obstacles, player_pos):  # метод для реализации движения врага
         if self.health <= 0:
             groups.current_level.enemies.remove(self)
+            chance = random.randrange(100)
+            if 25 < chance <= 50:
+                groups.current_level.items.append(Item((self.rect.center), 'speed',
+                                                (groups.items_sprite, groups.all_sprites)))
+            if chance <= 25:
+                groups.current_level.items.append(Item((self.rect.center), 'health',
+                                                (groups.items_sprite, groups.all_sprites)))
             self.kill()
         
         if self.dot_timer % 60 == 0:
