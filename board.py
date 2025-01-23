@@ -17,6 +17,7 @@ class Level():
         self.objects = []
         self.enemies = []
         self.items = []
+        self.chests = []
         with open(file, encoding="utf-8", mode="r") as fl:
             map = [x.strip() for x in fl.readlines()]
         
@@ -41,7 +42,7 @@ class Level():
                 elif map[lay][pos] == '|':
                     self.objects.append(Door(sdv, (items, collis, doors, all_sprites)))
                 elif map[lay][pos] == '&':
-                    self.objects.append(Chest(sdv, (items, collis, chests_sprites, all_sprites)))
+                    self.chests.append(Chest(sdv, (items, collis, chests_sprites, all_sprites)))
                 elif map[lay][pos] == '!':
                     self.enemies.append(Enemy(sdv[0], sdv[1], (collis, enemy_sprites, all_sprites)))
                     
@@ -52,17 +53,31 @@ class Level():
             self.screen.blit(enemy.image, enemy.rect)
         for item in self.items:
             self.screen.blit(item.image, item.rect)
+        for chest in self.chests:
+            self.screen.blit(chest.image, chest.rect)
 
     def collision(self):
         return collis
 
 
 def generate_level(screen, all_sprites):
-    levels.append(Level(f"data/levels/save_levels/start_room.txt", screen, all_sprites))
-    for i in sample(range(1, 11), 4):
-        levels.append(Level(f'data/levels/room_{i}.txt', screen, all_sprites))
-    levels.append(Level(f"data/levels/save_levels/chest_room.txt", screen, all_sprites))
-
+    # levels.append(Level(f"data/levels/save_levels/start_room.txt", screen, all_sprites))
+    # for i in sample(range(1, 11), 4):
+    #     levels.append(Level(f'data/levels/room_{i}.txt', screen, all_sprites))
+    # levels.append(Level(f"data/levels/save_levels/chest_room.txt", screen, all_sprites))
+    rooms = sample(range(1, 11), 8)
+    for i in range(len(rooms)):
+        if i == 0:
+            levels.append(Level(f"data/levels/save_levels/start_room.txt", screen, all_sprites))
+        if 0 <= i < 4:
+            levels.append(Level(f'data/levels/room_{rooms[i]}.txt', screen, all_sprites))
+        if i == 4:
+            levels.append(Level(f"data/levels/save_levels/chest_room_1.txt", screen, all_sprites))
+        if i >= 4:
+            levels.append(Level(f'data/levels/room_{rooms[i]}.txt', screen, all_sprites))
+        if i == len(rooms) - 1:
+            levels.append(Level(f"data/levels/save_levels/chest_room_2.txt", screen, all_sprites))
+        
 
 if __name__ == "__main__":
 

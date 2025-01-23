@@ -92,8 +92,9 @@ if __name__ == "__main__":
         arrow_sprites.update()
         spell_sprites.update()
         doors.update(configs.fight)
-        if groups.levels.index(groups.current_level) == 5:
-            chests_sprites.update(configs.player.rect.center, keys, screen)
+        if groups.levels.index(groups.current_level) % 5 == 0:
+            for i in groups.current_level.chests:
+                i.update(configs.player.rect.center, keys, screen)
         
         if configs.player.health <= 0:
             pygame.quit()

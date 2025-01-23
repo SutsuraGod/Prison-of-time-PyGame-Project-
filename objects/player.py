@@ -119,8 +119,9 @@ class Player(pygame.sprite.Sprite):
                     self.set_health(1)
                     groups.current_level.items.remove(item)
                 elif item.type == 'fireball' or item.type == 'icespell':
-                    self.set_spell(item.type)
-                    groups.current_level.items.remove(item)
+                    if item.type != self.current_spell:
+                        self.set_spell(item.type)
+                        groups.current_level.items.remove(item)
 
     def update_position(self, new_x, new_y):
         self.rect.x = new_x
@@ -135,16 +136,15 @@ class Player(pygame.sprite.Sprite):
             self.health += new_health
 
     def set_spell(self, new_spell):
-        if self.current_spell != new_spell:
-            if self.current_spell != '':
-                if self.direction:
-                    groups.current_level.items.append(
-                        Item((self.rect.centerx - 70, self.rect.centery), self.current_spell,
-                            (groups.items_sprite, groups.all_sprites))
-                    )
-                else:
-                    groups.current_level.items.append(
-                        Item((self.rect.centerx + 70, self.rect.centery), self.current_spell,
-                            (groups.items_sprite, groups.all_sprites))
-                    )
-            self.current_spell = new_spell
+        if self.current_spell != '':
+            if self.direction:
+                groups.current_level.items.append(
+                    Item((self.rect.centerx - 70, self.rect.centery), self.current_spell,
+                        (groups.items_sprite, groups.all_sprites))
+                )
+            else:
+                groups.current_level.items.append(
+                    Item((self.rect.centerx + 70, self.rect.centery), self.current_spell,
+                        (groups.items_sprite, groups.all_sprites))
+                )
+        self.current_spell = new_spell
