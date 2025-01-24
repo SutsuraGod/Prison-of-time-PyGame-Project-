@@ -9,6 +9,7 @@ from objects.wall import Wall
 from objects.bow import Bow
 from objects.void import Void
 from groups import items, collis, player_sprites, levels, doors, chests_sprites, enemy_sprites
+import groups
 from random import sample
 
 
@@ -61,22 +62,18 @@ class Level():
 
 
 def generate_level(screen, all_sprites):
-    # levels.append(Level(f"data/levels/save_levels/start_room.txt", screen, all_sprites))
-    # for i in sample(range(1, 11), 4):
-    #     levels.append(Level(f'data/levels/room_{i}.txt', screen, all_sprites))
-    # levels.append(Level(f"data/levels/save_levels/chest_room.txt", screen, all_sprites))
     rooms = sample(range(1, 11), 8)
     for i in range(len(rooms)):
         if i == 0:
-            levels.append(Level(f"data/levels/save_levels/start_room.txt", screen, all_sprites))
+            groups.levels.append(Level(f"data/levels/save_levels/start_room.txt", screen, all_sprites))
         if 0 <= i < 4:
-            levels.append(Level(f'data/levels/room_{rooms[i]}.txt', screen, all_sprites))
+            groups.levels.append(Level(f'data/levels/room_{rooms[i]}.txt', screen, all_sprites))
         if i == 4:
-            levels.append(Level(f"data/levels/save_levels/chest_room_1.txt", screen, all_sprites))
+            groups.levels.append(Level(f"data/levels/save_levels/chest_room_1.txt", screen, all_sprites))
         if i >= 4:
-            levels.append(Level(f'data/levels/room_{rooms[i]}.txt', screen, all_sprites))
+            groups.levels.append(Level(f'data/levels/room_{rooms[i]}.txt', screen, all_sprites))
         if i == len(rooms) - 1:
-            levels.append(Level(f"data/levels/save_levels/chest_room_2.txt", screen, all_sprites))
+            groups.levels.append(Level(f"data/levels/save_levels/chest_room_2.txt", screen, all_sprites))
         
 
 if __name__ == "__main__":

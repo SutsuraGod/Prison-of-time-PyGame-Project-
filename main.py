@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 import configs
 import assets
 from objects.bow import Bow
@@ -9,6 +9,24 @@ import groups
 from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, levels, chests_sprites
 from groups import spell_sprites, enemy_sprites, collis, doors
 from board import generate_level
+from button import Button
+
+
+def default_start():
+    configs.player = None
+    groups.all_sprites.empty()
+    groups.player_sprites.empty()
+    groups.bow_sprites.empty()
+    groups.arrow_sprites.empty()
+    groups.items.empty()
+    groups.collis.empty()
+    groups.doors.empty()
+    groups.chests_sprites.empty()
+    groups.spell_sprites.empty()
+    groups.enemy_sprites.empty()
+    groups.items_sprite.empty()
+    groups.levels = []
+    groups.current_level = []
 
 
 def print_hp(screen, player):
@@ -20,27 +38,57 @@ def print_hp(screen, player):
     screen.blit(hp_image, (70, 50))
 
 
-if __name__ == "__main__":
-    pygame.init()
-    screen = pygame.display.set_mode((configs.SCREEN_WIDTH, configs.SCREEN_HEIGHT))
-    pygame.display.set_caption('Prison of Time')
-    clock = pygame.time.Clock()
-    running = True
-    ATTACK_EVENT = pygame.USEREVENT + 1
+def terminate():
+    pygame.quit()
+    sys.exit()
+
+
+def main_menu():
+    while True:
+        screen.fill('black')
+        mouse_pos = pygame.mouse.get_pos()
+
+        menu_text = pygame.font.Font(None, 72).render('MAIN MENU', True, 'White')
+        menu_rect = menu_text.get_rect(center=(500, 140))
+
+        play_button = Button(pos=(500, 420), text_input='PLAY', font=pygame.font.Font(None, 72),
+                            base_color='White', alt_color='Green')
+        quit_button = Button(pos=(500, 700), text_input='QUIT', font=pygame.font.Font(None, 72),
+                            base_color='White', alt_color='Green')
+        
+        screen.blit(menu_text, menu_rect)
+        
+        for button in [play_button, quit_button]:
+            button.change_color(mouse_pos)
+            button.update(screen=screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if play_button.check_for_input(mouse_pos):
+                    play()
+                if quit_button.check_for_input(mouse_pos):
+                    terminate()
+        pygame.display.flip()
+
+
+def play():
+    default_start()
     attack_cooldown = 500
     last_attack_time = 0
     spell_cooldown = 1500
     last_spelling_time = 0
 
     generate_level(screen, all_sprites)
-    groups.current_level = levels[0]
+    groups.current_level = groups.levels[0]
 
     bow = Bow(configs.player.rect.center, (bow_sprites, all_sprites))
 
-    while running:
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                terminate()
 
         mouse_buttons = pygame.mouse.get_pressed()
         if mouse_buttons[0]:
@@ -96,10 +144,17 @@ if __name__ == "__main__":
             for i in groups.current_level.chests:
                 i.update(configs.player.rect.center, keys, screen)
         
-        if configs.player.health <= 0:
-            pygame.quit()
-
         clock.tick(configs.FPS)
         pygame.display.flip()
 
-    pygame.quit()
+        if configs.player.health <= 0:
+            main_menu()
+
+
+if __name__ == "__main__":
+    pygame.init()
+    screen = pygame.display.set_mode((configs.SCREEN_WIDTH, configs.SCREEN_HEIGHT))
+    pygame.display.set_caption('Prison of Time')
+    clock = pygame.time.Clock()
+    ATTACK_EVENT = pygame.USEREVENT + 1
+    main_menu()
