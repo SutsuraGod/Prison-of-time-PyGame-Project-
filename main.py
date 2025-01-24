@@ -73,36 +73,75 @@ def main_menu():
         pygame.display.flip()
 
 
+def pause_menu():
+    running = True
+    while running:
+        screen.fill('black')
+        mouse_pos = pygame.mouse.get_pos()
+
+        pause_text = pygame.font.Font(None, 72).render('PAUSE', True, 'White')
+        pause_rect = pause_text.get_rect(center=(500, 105))
+
+        resume_button = Button(pos=(500, 315), text_input='RESUME', font=pygame.font.Font(None, 72),
+                            base_color="White", alt_color='Green')
+        main_menu_button = Button(pos=(500, 525), text_input='MAIN MENU', font=pygame.font.Font(None, 72),
+                            base_color='White', alt_color='Green')
+        quit_button = Button(pos=(500, 735), text_input='QUIT', font=pygame.font.Font(None, 72),
+                            base_color='White', alt_color='Green')
+
+        screen.blit(pause_text, pause_rect)
+
+        for button in [resume_button, main_menu_button, quit_button]:
+            button.change_color(mouse_pos)
+            button.update(screen=screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if resume_button.check_for_input(mouse_pos):
+                    current_time = pygame.time.get_ticks()
+                    configs.player.last_attack_time = current_time
+                    configs.player.last_spelling_time = current_time
+                    running = False
+                elif main_menu_button.check_for_input(mouse_pos):
+                    main_menu()
+                if quit_button.check_for_input(mouse_pos):
+                    terminate()
+
+        pygame.display.flip()
+
+
 def play():
     default_start()
-    attack_cooldown = 500
-    last_attack_time = 0
-    spell_cooldown = 1500
-    last_spelling_time = 0
-
     generate_level(screen, all_sprites)
     groups.current_level = groups.levels[0]
-
     bow = Bow(configs.player.rect.center, (bow_sprites, all_sprites))
+
+    attack_cooldown = 500
+    spell_cooldown = 1500
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
-
+            
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pause_menu()
+                print(configs.player.last_attack_time, current_attack_time)
         mouse_buttons = pygame.mouse.get_pressed()
         if mouse_buttons[0]:
             current_attack_time = pygame.time.get_ticks()
-            if current_attack_time - last_attack_time >= attack_cooldown:
+            if current_attack_time - configs.player.last_attack_time >= attack_cooldown:
                 Arrow(filename='arrow.png', spawn_pos=configs.player.rect.center,
                     target_pos=pygame.mouse.get_pos(), normal_angle=45, groups=(arrow_sprites, all_sprites))
-                last_attack_time = current_attack_time
+                configs.player.last_attack_time = current_attack_time
 
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_q]:
             current_spelling_time = pygame.time.get_ticks()
-            if current_spelling_time - last_spelling_time >= spell_cooldown:
+            if current_spelling_time - configs.player.last_spelling_time >= spell_cooldown:
                 if configs.player.current_spell == 'fireball':
                     Fireball(filename='fireball.png', spawn_pos=configs.player.rect.center,
                             target_pos=pygame.mouse.get_pos(), normal_angle=270, groups=(spell_sprites, all_sprites))
@@ -110,7 +149,7 @@ def play():
                     Icespell(filename='icespell.png', spawn_pos=configs.player.rect.center,
                             target_pos=pygame.mouse.get_pos(), normal_angle=0, groups=(spell_sprites, all_sprites))
 
-                last_spelling_time = current_spelling_time
+                configs.player.last_spelling_time = current_spelling_time
 
         configs.player.moving_event(keys)
 

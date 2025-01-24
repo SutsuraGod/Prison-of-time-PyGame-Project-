@@ -41,6 +41,9 @@ class Player(pygame.sprite.Sprite):
         self.step_speed = 0
         self.step_health = 0
 
+        self.last_attack_time = 0
+        self.last_spelling_time = 0
+
     def update(self, mouse_pos):
         if self.health <= 0:
             self.kill()
