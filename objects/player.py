@@ -22,12 +22,12 @@ class Player(pygame.sprite.Sprite):
         ]
         self.image = self.right_images[0]
         self.direction = True
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect(center=(x, y))
         self.mask = pygame.mask.from_surface(self.image)
         self.counter_images = 0
 
         super().__init__(*groups)
-        self.v = 0
+        self.speed = 0
         self.max_v = 360 / configs.FPS
         self.a = 5 / configs.FPS
 
@@ -40,6 +40,8 @@ class Player(pygame.sprite.Sprite):
         self.max_speed = 540 // configs.FPS
         self.step_speed = 0
         self.step_health = 0
+        self.default_health = 5
+        self.default_speed = 0
 
     def update(self, mouse_pos):
         if self.health <= 0:
@@ -62,33 +64,33 @@ class Player(pygame.sprite.Sprite):
         was_x = self.rect.x
         was_y = self.rect.y
 
-        if self.v < self.max_v:
-            self.v += self.a
+        if self.speed < self.max_v:
+            self.speed += self.a
         if keys[pygame.K_w] and keys[pygame.K_d]:
-            self.rect.x += self.v / (2 ** 0.5)
-            self.rect.y -= self.v / (2 ** 0.5)
+            self.rect.x += self.speed / (2 ** 0.5)
+            self.rect.y -= self.speed / (2 ** 0.5)
             self.direction = True
         elif keys[pygame.K_d] and keys[pygame.K_s]:
-            self.rect.x += self.v / (2 ** 0.5)
-            self.rect.y += self.v / (2 ** 0.5)
+            self.rect.x += self.speed / (2 ** 0.5)
+            self.rect.y += self.speed / (2 ** 0.5)
             self.direction = True
         elif keys[pygame.K_s] and keys[pygame.K_a]:
-            self.rect.x -= self.v / (2 ** 0.5)
-            self.rect.y += self.v / (2 ** 0.5)
+            self.rect.x -= self.speed / (2 ** 0.5)
+            self.rect.y += self.speed / (2 ** 0.5)
             self.direction = False
         elif keys[pygame.K_a] and keys[pygame.K_w]:
-            self.rect.x -= self.v / (2 ** 0.5)
-            self.rect.y -= self.v / (2 ** 0.5)
+            self.rect.x -= self.speed / (2 ** 0.5)
+            self.rect.y -= self.speed / (2 ** 0.5)
             self.direction = False
         elif keys[pygame.K_w]:
-            self.rect.y -= self.v
+            self.rect.y -= self.speed
         elif keys[pygame.K_s]:
-            self.rect.y += self.v
+            self.rect.y += self.speed
         elif keys[pygame.K_a]:
-            self.rect.x -= self.v
+            self.rect.x -= self.speed
             self.direction = False
         elif keys[pygame.K_d]:
-            self.rect.x += self.v
+            self.rect.x += self.speed
             self.direction = True
         
         if groups.current_level:
@@ -112,7 +114,7 @@ class Player(pygame.sprite.Sprite):
 
         for item in groups.current_level.items:
             if pygame.sprite.collide_rect(self, item):
-                if item.type == 'speed' and self.max_speed > self.v:
+                if item.type == 'speed' and self.max_speed > self.speed:
                     self.set_speed(30)
                     groups.current_level.items.remove(item)
                 elif item.type == 'health' and self.max_health != self.health:
@@ -127,8 +129,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = new_y
 
     def set_speed(self, new_speed):
-        if self.v < self.max_speed:
-            self.v += (new_speed / configs.FPS) * math.exp(-self.step_speed)
+        if self.speed < self.max_speed:
+            self.speed += (new_speed / configs.FPS) * math.exp(-self.step_speed)
 
     def set_health(self, new_health):
         if self.health < self.max_health:
@@ -148,3 +150,8 @@ class Player(pygame.sprite.Sprite):
                             (groups.items_sprite, groups.all_sprites))
                     )
             self.current_spell = new_spell
+
+    def set_default_stats(self):
+        self.health = self.default_health
+        self.speed = self.default_speed
+        self.current_spell = ''

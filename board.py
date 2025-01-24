@@ -9,6 +9,7 @@ from objects.wall import Wall
 from objects.bow import Bow
 from objects.void import Void
 from groups import items, collis, player_sprites, levels, doors, chests_sprites, enemy_sprites
+import groups
 from random import sample
 
 
@@ -58,10 +59,10 @@ class Level():
 
 
 def generate_level(screen, all_sprites):
-    levels.append(Level(f"data/levels/save_levels/start_room.txt", screen, all_sprites))
+    groups.levels.append(Level(f"data/levels/save_levels/start_room.txt", screen, all_sprites))
     for i in sample(range(1, 11), 4):
-        levels.append(Level(f'data/levels/room_{i}.txt', screen, all_sprites))
-    levels.append(Level(f"data/levels/save_levels/chest_room.txt", screen, all_sprites))
+        groups.levels.append(Level(f'data/levels/room_{i}.txt', screen, all_sprites))
+    groups.levels.append(Level(f"data/levels/save_levels/chest_room.txt", screen, all_sprites))
 
 
 if __name__ == "__main__":
