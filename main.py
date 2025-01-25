@@ -10,6 +10,7 @@ from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, leve
 from groups import spell_sprites, enemy_sprites, collis, doors
 from board import generate_level
 from button import Button
+from sound_manager import play_sound, stop_sound, is_sound_playing
 
 
 def default_start():
@@ -44,6 +45,7 @@ def terminate():
 
 
 def main_menu():
+    play_sound('menu')
     while True:
         screen.fill('black')
         mouse_pos = pygame.mouse.get_pos()
@@ -67,13 +69,20 @@ def main_menu():
                 terminate()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button.check_for_input(mouse_pos):
+                    stop_sound('menu')
+                    play_sound('click')
                     play()
                 if quit_button.check_for_input(mouse_pos):
+                    stop_sound('menu')
+                    play_sound('click')
+                    while is_sound_playing('click'):
+                        pygame.time.wait(10)
                     terminate()
         pygame.display.flip()
 
 
 def pause_menu():
+    play_sound('menu')
     running = True
     while running:
         screen.fill('black')
@@ -100,19 +109,32 @@ def pause_menu():
                 terminate()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if resume_button.check_for_input(mouse_pos):
+                    stop_sound('menu')
+                    play_sound('click')
+                    while is_sound_playing('click'):
+                        pygame.time.wait(10)
                     current_time = pygame.time.get_ticks()
                     configs.player.last_attack_time = current_time
                     configs.player.last_spelling_time = current_time
                     running = False
                 elif main_menu_button.check_for_input(mouse_pos):
+                    stop_sound('menu')
+                    play_sound('click')
+                    while is_sound_playing('click'):
+                        pygame.time.wait(10)
                     main_menu()
                 if quit_button.check_for_input(mouse_pos):
+                    stop_sound('menu')
+                    play_sound('click')
+                    while is_sound_playing('click'):
+                        pygame.time.wait(10)
                     terminate()
 
         pygame.display.flip()
 
 
 def play():
+    play_sound('in game')
     default_start()
     generate_level(screen, all_sprites)
     groups.current_level = groups.levels[0]
@@ -127,14 +149,16 @@ def play():
                 terminate()
             
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                stop_sound('in game')
                 pause_menu()
-                print(configs.player.last_attack_time, current_attack_time)
+                play_sound('in game')
         mouse_buttons = pygame.mouse.get_pressed()
         if mouse_buttons[0]:
             current_attack_time = pygame.time.get_ticks()
             if current_attack_time - configs.player.last_attack_time >= attack_cooldown:
                 Arrow(filename='arrow.png', spawn_pos=configs.player.rect.center,
                     target_pos=pygame.mouse.get_pos(), normal_angle=45, groups=(arrow_sprites, all_sprites))
+                play_sound('bow')
                 configs.player.last_attack_time = current_attack_time
 
         keys = pygame.key.get_pressed()
@@ -148,6 +172,8 @@ def play():
                 if configs.player.current_spell == 'icespell':
                     Icespell(filename='icespell.png', spawn_pos=configs.player.rect.center,
                             target_pos=pygame.mouse.get_pos(), normal_angle=0, groups=(spell_sprites, all_sprites))
+                play_sound('spell')
+                configs.player.last_spelling_time = current_spelling_time
                     
         configs.player.moving_event(keys)
 
@@ -185,11 +211,13 @@ def play():
         pygame.display.flip()
 
         if configs.player.health <= 0:
+            stop_sound('in game')
             main_menu()
 
 
 if __name__ == "__main__":
     pygame.init()
+    pygame.mixer.init()
     screen = pygame.display.set_mode((configs.SCREEN_WIDTH, configs.SCREEN_HEIGHT))
     pygame.display.set_caption('Prison of Time')
     clock = pygame.time.Clock()
