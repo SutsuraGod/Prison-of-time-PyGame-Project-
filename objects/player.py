@@ -62,45 +62,92 @@ class Player(pygame.sprite.Sprite):
 
     def moving_event(self, keys):
 
-        was_x = self.rect.x
-        was_y = self.rect.y
+        # was_x = self.rect.x
+        # was_y = self.rect.y
+
+        # dx, dy = 0, 0
+        # if self.v < self.max_v:
+        #     self.v += self.a
+        # if keys[pygame.K_w]:
+        #     dy -= self.v
+        # if keys[pygame.K_s]:
+        #     dy += self.v
+        # if keys[pygame.K_a]:
+        #     dx -= self.v
+        #     self.direction = False
+        # if keys[pygame.K_d]:
+        #     dx += self.v
+        #     self.direction = True
+
+        # if dx != 0 and dy != 0:
+        #     diagonal_speed = self.v / (2 ** 0.5)
+        #     dx *= diagonal_speed / self.v
+        #     dy *= diagonal_speed / self.v
+        
+
+        # self.rect.x += dx
+        # self.rect.y += dy
+
+        # collision_sides = []
+        # if groups.current_level:
+        #     for sprite in groups.current_level.objects:
+        #         if pygame.sprite.collide_mask(self, sprite):
+        #             collision_sides.append(self.get_collision_side(sprite.rect))
+        #             # if collision_side == "left":
+        #             #     self.rect.x = was_x
+        #             # elif collision_side == "right":
+        #             #     self.rect.x = was_x
+        #             # elif collision_side == "top":
+        #             #     self.rect.y = was_y
+        #             # elif collision_side == "bottom":
+        #             #     self.rect.y = was_y
+        # if collision_sides:
+        #     total_side = max(set(collision_sides), key=collision_sides.count)
+        #     if total_side == "left":
+        #         self.rect.x = was_x
+        #     elif total_side == "right":
+        #         self.rect.x = was_x
+        #     elif total_side == "top":
+        #         self.rect.y = was_y
+        #     elif total_side == "bottom":
+        #         self.rect.y = was_y
+        was_x, was_y = self.rect.x, self.rect.y
+        dx, dy = 0, 0
 
         if self.v < self.max_v:
             self.v += self.a
-        if keys[pygame.K_w] and keys[pygame.K_d]:
-            self.rect.x += self.v / (2 ** 0.5)
-            self.rect.y -= self.v / (2 ** 0.5)
-            self.direction = True
-        elif keys[pygame.K_d] and keys[pygame.K_s]:
-            self.rect.x += self.v / (2 ** 0.5)
-            self.rect.y += self.v / (2 ** 0.5)
-            self.direction = True
-        elif keys[pygame.K_s] and keys[pygame.K_a]:
-            self.rect.x -= self.v / (2 ** 0.5)
-            self.rect.y += self.v / (2 ** 0.5)
+        if keys[pygame.K_w]:
+            dy -= self.v
+        if keys[pygame.K_s]:
+            dy += self.v
+        if keys[pygame.K_a]:
+            dx -= self.v
             self.direction = False
-        elif keys[pygame.K_a] and keys[pygame.K_w]:
-            self.rect.x -= self.v / (2 ** 0.5)
-            self.rect.y -= self.v / (2 ** 0.5)
-            self.direction = False
-        elif keys[pygame.K_w]:
-            self.rect.y -= self.v
-        elif keys[pygame.K_s]:
-            self.rect.y += self.v
-        elif keys[pygame.K_a]:
-            self.rect.x -= self.v
-            self.direction = False
-        elif keys[pygame.K_d]:
-            self.rect.x += self.v
+        if keys[pygame.K_d]:
+            dx += self.v
             self.direction = True
-        
-        if groups.current_level:
-            for sprite in groups.current_level.objects:
-                if pygame.sprite.collide_mask(self, sprite):
-                    self.rect.x = was_x
-                    self.rect.y = was_y
+
+        # Диагональное движение
+        if dx != 0 and dy != 0:
+            diagonal_speed = self.v / (2 ** 0.5)
+            dx *= diagonal_speed / self.v
+            dy *= diagonal_speed / self.v
+
+        # Проверяем движение по X
+        self.rect.x += dx
+        for sprite in groups.current_level.objects:
+            if pygame.sprite.collide_mask(self, sprite):
+                self.rect.x = was_x
+                break
+
+        # Проверяем движение по Y
+        self.rect.y += dy
+        for sprite in groups.current_level.objects:
+            if pygame.sprite.collide_mask(self, sprite):
+                self.rect.y = was_y
+                break
                 
-        for door in groups.doors:
+        for door in groups.current_level.doors:
             if pygame.sprite.collide_rect(self, door):
                 if door.get_status():
                     if len(groups.levels) > groups.levels.index(groups.current_level) + 1 and configs.SCREEN_WIDTH // 2 < self.rect.x:
@@ -151,3 +198,20 @@ class Player(pygame.sprite.Sprite):
                         (groups.items_sprite, groups.all_sprites))
                 )
         self.current_spell = new_spell
+    
+    def get_collision_side(self, obstacle_rect):
+        # Вычисляем разницу между сторонами
+        dx = (self.rect.centerx - obstacle_rect.centerx - 1)
+        dy = (self.rect.centery - obstacle_rect.centery - 1)
+        print(dx, dy)
+        # Сравниваем абсолютные значения
+        if abs(dx) > abs(dy):
+            if dx > 0:
+                return "left"  # Столкновение с левой стороны препятствия
+            else:
+                return "right"  # Столкновение с правой стороны препятствия
+        else:
+            if dy > 0:
+                return "top"  # Столкновение с верхней стороны препятствия
+            else:
+                return "bottom"  # Столкновение с нижней стороны препятствия
