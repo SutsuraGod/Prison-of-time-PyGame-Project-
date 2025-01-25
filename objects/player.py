@@ -4,6 +4,7 @@ import configs
 import groups
 from objects.item import Item
 import math
+from sound_manager import play_sound
 
 
 class Player(pygame.sprite.Sprite):
@@ -61,56 +62,6 @@ class Player(pygame.sprite.Sprite):
             self.counter_images += 1
 
     def moving_event(self, keys):
-
-        # was_x = self.rect.x
-        # was_y = self.rect.y
-
-        # dx, dy = 0, 0
-        # if self.v < self.max_v:
-        #     self.v += self.a
-        # if keys[pygame.K_w]:
-        #     dy -= self.v
-        # if keys[pygame.K_s]:
-        #     dy += self.v
-        # if keys[pygame.K_a]:
-        #     dx -= self.v
-        #     self.direction = False
-        # if keys[pygame.K_d]:
-        #     dx += self.v
-        #     self.direction = True
-
-        # if dx != 0 and dy != 0:
-        #     diagonal_speed = self.v / (2 ** 0.5)
-        #     dx *= diagonal_speed / self.v
-        #     dy *= diagonal_speed / self.v
-        
-
-        # self.rect.x += dx
-        # self.rect.y += dy
-
-        # collision_sides = []
-        # if groups.current_level:
-        #     for sprite in groups.current_level.objects:
-        #         if pygame.sprite.collide_mask(self, sprite):
-        #             collision_sides.append(self.get_collision_side(sprite.rect))
-        #             # if collision_side == "left":
-        #             #     self.rect.x = was_x
-        #             # elif collision_side == "right":
-        #             #     self.rect.x = was_x
-        #             # elif collision_side == "top":
-        #             #     self.rect.y = was_y
-        #             # elif collision_side == "bottom":
-        #             #     self.rect.y = was_y
-        # if collision_sides:
-        #     total_side = max(set(collision_sides), key=collision_sides.count)
-        #     if total_side == "left":
-        #         self.rect.x = was_x
-        #     elif total_side == "right":
-        #         self.rect.x = was_x
-        #     elif total_side == "top":
-        #         self.rect.y = was_y
-        #     elif total_side == "bottom":
-        #         self.rect.y = was_y
         was_x, was_y = self.rect.x, self.rect.y
         dx, dy = 0, 0
 
@@ -172,6 +123,7 @@ class Player(pygame.sprite.Sprite):
                     if item.type != self.current_spell:
                         self.set_spell(item.type)
                         groups.current_level.items.remove(item)
+                play_sound('item')
 
     def update_position(self, new_x, new_y):
         self.rect.x = new_x
