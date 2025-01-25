@@ -148,9 +148,7 @@ def play():
                 if configs.player.current_spell == 'icespell':
                     Icespell(filename='icespell.png', spawn_pos=configs.player.rect.center,
                             target_pos=pygame.mouse.get_pos(), normal_angle=0, groups=(spell_sprites, all_sprites))
-
-                configs.player.last_spelling_time = current_spelling_time
-
+                    
         configs.player.moving_event(keys)
 
         screen.fill('gray')

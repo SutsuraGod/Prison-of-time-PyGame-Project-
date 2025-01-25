@@ -19,6 +19,7 @@ class Level():
         self.enemies = []
         self.items = []
         self.chests = []
+        self.doors = []
         with open(file, encoding="utf-8", mode="r") as fl:
             map = [x.strip() for x in fl.readlines()]
         
@@ -41,7 +42,7 @@ class Level():
                     if configs.player is None:
                         configs.player = Player(sdv[0], sdv[1], (player_sprites, all_sprites))
                 elif map[lay][pos] == '|':
-                    self.objects.append(Door(sdv, (items, collis, doors, all_sprites)))
+                    self.doors.append(Door(sdv, (items, collis, doors, all_sprites)))
                 elif map[lay][pos] == '&':
                     self.chests.append(Chest(sdv, (items, collis, chests_sprites, all_sprites)))
                 elif map[lay][pos] == '!':
@@ -56,6 +57,8 @@ class Level():
             self.screen.blit(item.image, item.rect)
         for chest in self.chests:
             self.screen.blit(chest.image, chest.rect)
+        for door in self.doors:
+            self.screen.blit(door.image, door.rect)
 
     def collision(self):
         return collis
