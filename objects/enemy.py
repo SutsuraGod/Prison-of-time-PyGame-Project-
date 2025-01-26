@@ -162,11 +162,25 @@ class Enemy(pygame.sprite.Sprite):
 
     def avoid_obstacle(self, obstacle, direction):  # Метод для реализации обхода препятствий, отклоняя направление
 
-        offset = 7  # Сколько будет отклоняться враг от исходного направления
+        offset = 5.5  # Сколько будет отклоняться враг от исходного направления
 
         # Пробуем сместить врага вправо или влево
         new_direction = direction.rotate(135)  # Поворот на 135 градусов
         new_position = self.rect.center + new_direction * offset
-        self.rect.center = new_position
 
-        self.rect.center += direction * 1  # Медленно двигаться по текущему направлению
+
+        if new_position[0] <= 40:  # < 80
+            new_position[0] = 70
+            new_direction[0] *= -1
+        if new_position[0] >= 960:  # > 920
+            new_position[0] = 910
+            new_direction[0] *= -1
+        if new_position[1] <= 40:
+            new_position[1] = 70
+            new_direction[1] *= -1
+        if new_position[1] >= 800:  # > 760
+            new_position[1] = 750
+            new_direction[1] *= -1
+
+        self.rect.center = new_position
+        self.rect.center += new_direction * 1  # Медленно двигаться по текущему направлению
