@@ -8,6 +8,7 @@ from objects.player import Player
 from objects.wall import Wall
 from objects.bow import Bow
 from objects.void import Void
+from objects.boss1 import Boss
 from groups import items, collis, player_sprites, levels, doors, chests_sprites, enemy_sprites
 import groups
 from random import sample
@@ -47,7 +48,8 @@ class Level():
                     self.chests.append(Chest(sdv, (items, collis, chests_sprites, all_sprites)))
                 elif map[lay][pos] == '!':
                     self.enemies.append(Enemy(sdv[0], sdv[1], (collis, enemy_sprites, all_sprites)))
-                    
+                elif map[lay][pos] == 'B':
+                    self.enemies.append(Boss(sdv[0], sdv[1], (collis, enemy_sprites, all_sprites)))
     def draw(self):
         for obj in self.objects:
             self.screen.blit(obj.image, obj.rect)

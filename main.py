@@ -5,6 +5,7 @@ from objects.bow import Bow
 from objects.arrow import Arrow
 from objects.fireball import Fireball
 from objects.icespell import Icespell
+from objects.bullet import Bullet
 import groups
 from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, levels, chests_sprites
 from groups import spell_sprites, enemy_sprites, collis, doors
@@ -184,6 +185,14 @@ def play():
         bow_sprites.draw(screen)
         arrow_sprites.draw(screen)
         spell_sprites.draw(screen)
+
+        for bullet in groups.all_sprites:
+            if isinstance(bullet, Bullet):
+                bullet.update(configs.player)  # Обновляем пулю
+                bullet.draw(screen)  # Отрисовываем пулю вручную
+
+
+
         print_hp(screen, configs.player)
 
         if not groups.current_level.enemies:
