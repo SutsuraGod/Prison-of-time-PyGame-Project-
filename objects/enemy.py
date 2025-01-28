@@ -34,10 +34,12 @@ class Enemy(pygame.sprite.Sprite):
         # переменные для реализаци движения врага по произвольной траектории,
         # которая меняется через некоторые промежутки времени
         self.direction1 = pygame.math.Vector2(random.uniform(-1, 1), random.uniform(-1, 1)).normalize()
-        self.change_time = pygame.time.get_ticks() + random.randint(100000, 300000)
+        self.change_time = pygame.time.get_ticks() + random.randint(10000, 11000)
 
         self.dot = ''
         self.dot_timer = 0
+
+        self.state = 'patrol'
 
     def move(self, player, player_rect, obstacles, player_pos):  # метод для реализации движения врага
         if self.health <= 0:
@@ -66,9 +68,9 @@ class Enemy(pygame.sprite.Sprite):
         # рассчитываем расстояние до игрока простым способом
         distance_to_player = ((player_pos[0] - self.rect.x) ** 2 + (player_pos[1] - self.rect.y) ** 2) ** 0.5
         # если расстояние менее 400, то враг переходит в состояние преследования
-        if distance_to_player < 400:
+        if distance_to_player < 400 and not(any([pygame.sprite.collide_mask(self, obstacle) for obstacle in obstacles])):
             self.state = "chase"
-        else:
+        elif distance_to_player >= 400 and not(any([pygame.sprite.collide_mask(self, obstacle) for obstacle in obstacles])):
             self.state = "patrol"
 
         if self.state == "chase":  # Режим преследования
@@ -120,6 +122,11 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.center = new_position
 
         else:  # Режим патрулирования
+            #self.direction1 = self.direction1.normalize()
+            # Двигаем врага
+            self.rect.x += self.direction1.x * self.speed
+            self.rect.y += self.direction1.y * self.speed
+
             # Проверка столкновений с препятствиями
             for obstacle in obstacles:
                 if pygame.sprite.collide_mask(self, obstacle):
@@ -144,29 +151,34 @@ class Enemy(pygame.sprite.Sprite):
                 self.counter_images += 1
             #
 
-            # Двигаем врага
-            self.rect.x += self.direction1.x * self.speed
-            self.rect.y += self.direction1.y * self.speed
 
             # Проверка столкновения со стенами
-            if self.rect.left <= 50 or self.rect.right >= configs.SCREEN_WIDTH - 50:
+            if self.rect.left <= 41:
                 self.direction1.x *= -1
-
-            if self.rect.top <= 50 or self.rect.bottom >= configs.SCREEN_HEIGHT - 50:
+                self.rect.x += 1
+            if self.rect.right >= configs.SCREEN_WIDTH - 41:
+                self.direction1.x *= -1
+                self.rect.x -= 1
+            if self.rect.top <= 41:
                 self.direction1.y *= -1
+                self.rect.y += 2
+            if self.rect.bottom >= configs.SCREEN_HEIGHT - 41:
+                self.direction1.y *= -1
+                self.rect.y -= 2
 
             # Смена направления
             if pygame.time.get_ticks() > self.change_time:
                 self.direction1 = pygame.math.Vector2(random.uniform(-1, 1), random.uniform(-1, 1)).normalize()
-                self.change_time = pygame.time.get_ticks() + random.randint(10000, 30000)
+                self.change_time = pygame.time.get_ticks() + random.randint(10000, 11000)
 
     def avoid_obstacle(self, obstacle, direction):  # Метод для реализации обхода препятствий, отклоняя направление
 
         offset = 5.5  # Сколько будет отклоняться враг от исходного направления
 
         # Пробуем сместить врага вправо или влево
-        new_direction = direction.rotate(135)  # Поворот на 135 градусов
+        new_direction = direction.rotate(145)  # Поворот на 135 градусов
         new_position = self.rect.center + new_direction * offset
+
 
 
         if new_position[0] <= 40:  # < 80
