@@ -5,6 +5,7 @@ from objects.bow import Bow
 from objects.arrow import Arrow
 from objects.fireball import Fireball
 from objects.icespell import Icespell
+from objects.bullet import Bullet
 import groups
 from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, levels, chests_sprites
 from groups import spell_sprites, enemy_sprites, collis, doors
@@ -169,10 +170,11 @@ def play():
                 if configs.player.current_spell == 'fireball':
                     Fireball(filename='fireball.png', spawn_pos=configs.player.rect.center,
                             target_pos=pygame.mouse.get_pos(), normal_angle=270, groups=(spell_sprites, all_sprites))
+                    play_sound('spell')
                 if configs.player.current_spell == 'icespell':
                     Icespell(filename='icespell.png', spawn_pos=configs.player.rect.center,
                             target_pos=pygame.mouse.get_pos(), normal_angle=0, groups=(spell_sprites, all_sprites))
-                play_sound('spell')
+                    play_sound('spell')
                 configs.player.last_spelling_time = current_spelling_time
                     
         configs.player.moving_event(keys)
@@ -184,6 +186,12 @@ def play():
         bow_sprites.draw(screen)
         arrow_sprites.draw(screen)
         spell_sprites.draw(screen)
+
+        for bullet in groups.all_sprites:
+            if isinstance(bullet, Bullet):
+                bullet.update(configs.player)  # Обновляем пулю
+                bullet.draw(screen)  # Отрисовываем пулю вручную
+
         print_hp(screen, configs.player)
 
         if not groups.current_level.enemies:
@@ -194,6 +202,9 @@ def play():
         for i in range(last_len := len(groups.current_level.enemies)):
                 enemy = groups.current_level.enemies[i]
                 enemy.move(configs.player, configs.player.rect, groups.current_level.objects, configs.player.rect.center)
+                if last_len != len(groups.current_level.enemies) and groups.levels.index(groups.current_level) == 11:
+                    main_menu()
+                    break
                 if last_len != len(groups.current_level.enemies):
                     break
                 groups.current_level.enemies[i] = enemy
