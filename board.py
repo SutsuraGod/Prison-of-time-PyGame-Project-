@@ -79,6 +79,7 @@ def generate_level(screen, all_sprites):
             groups.levels.append(Level(f'data/levels/room_{rooms[i]}.txt', screen, all_sprites))
         if i == len(rooms) - 1:
             groups.levels.append(Level(f"data/levels/save_levels/chest_room_2.txt", screen, all_sprites))
+    groups.levels.append(Level(f'data/levels/save_levels/boss_fight_room.txt', screen, all_sprites))
         
 
 if __name__ == "__main__":

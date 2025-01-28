@@ -116,14 +116,16 @@ class Player(pygame.sprite.Sprite):
                 if item.type == 'speed' and self.max_speed > self.v:
                     self.set_speed(30)
                     groups.current_level.items.remove(item)
+                    play_sound('item')
                 elif item.type == 'health' and self.max_health != self.health:
                     self.set_health(1)
                     groups.current_level.items.remove(item)
+                    play_sound('item')
                 elif item.type == 'fireball' or item.type == 'icespell':
                     if item.type != self.current_spell:
                         self.set_spell(item.type)
                         groups.current_level.items.remove(item)
-                play_sound('item')
+                        play_sound('item')
 
     def update_position(self, new_x, new_y):
         self.rect.x = new_x
