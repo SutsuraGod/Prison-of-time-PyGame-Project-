@@ -30,7 +30,7 @@ def load_gif_frames(path):
 class Boss(pygame.sprite.Sprite):
     def __init__(self, x, y, *groups):
         super().__init__(*groups)
-        self.start_health = 10
+        self.start_health = 20
         self.start_speed = 90 // configs.FPS
         self.health = self.start_health
         self.speed = self.start_speed

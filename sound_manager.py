@@ -14,12 +14,15 @@ bow_sound.set_volume(0.5)
 spell_sound = pygame.mixer.Sound(f'{music_path}shoot_spell.wav')
 raising_item_sound = pygame.mixer.Sound(f'{music_path}raising_item.wav')
 raising_item_sound.set_volume(0.3)
+boss_fight_music = pygame.mixer.Sound(f'{music_path}boss_fight_music.mp3')
+boss_fight_music.set_volume(0.5)
 
 soundtrack_channel = pygame.mixer.Channel(0)
 click_sound_channel = pygame.mixer.Channel(1)
 spell_sound_channel = pygame.mixer.Channel(2)
 bow_sound_channel = pygame.mixer.Channel(3)
 raising_item_sound_channel = pygame.mixer.Channel(4)
+boss_fight_sound_channel = pygame.mixer.Channel(5)
 
 
 def play_sound(sound):
@@ -36,6 +39,8 @@ def play_sound(sound):
         bow_sound_channel.play(bow_sound)
     elif sound == 'item':
         raising_item_sound_channel.play(raising_item_sound)
+    elif sound == 'boss':
+        boss_fight_sound_channel.play(boss_fight_music, loops=-1)
 
 
 def stop_sound(sound):
@@ -52,6 +57,8 @@ def stop_sound(sound):
         bow_sound_channel.stop()
     elif sound == 'item':
         raising_item_sound_channel.stop()
+    elif sound == 'boss':
+        boss_fight_sound_channel.stop()
 
 
 def is_sound_playing(sound):
@@ -68,3 +75,5 @@ def is_sound_playing(sound):
         return bow_sound_channel.get_busy()
     elif sound == 'item':
         return raising_item_sound_channel.get_busy()
+    elif sound == 'boss':
+        return boss_fight_sound_channel.get_busy()

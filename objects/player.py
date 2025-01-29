@@ -45,6 +45,8 @@ class Player(pygame.sprite.Sprite):
         self.last_attack_time = 0
         self.last_spelling_time = 0
 
+        self.playing = True
+
     def update(self, mouse_pos):
         if self.health <= 0:
             self.kill()
@@ -107,6 +109,8 @@ class Player(pygame.sprite.Sprite):
                     elif len(groups.levels) > groups.levels.index(groups.current_level) - 1 and configs.SCREEN_WIDTH // 2 > self.rect.x:
                         groups.current_level = groups.levels[groups.levels.index(groups.current_level) - 1]
                         self.update_position((configs.SCREEN_WIDTH // configs.CELL_SIZE) * 34, (configs.SCREEN_HEIGHT // configs.CELL_SIZE) * 19)
+                    elif groups.levels.index(groups.current_level) == 11:
+                        self.playing = False
                     groups.arrow_sprites.empty()
                     groups.spell_sprites.empty()
                     break

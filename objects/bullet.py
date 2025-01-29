@@ -15,7 +15,6 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=boss_pos)
 
         player_pos = (player_pos[0] + random.randint(-100, 100), player_pos[1] + random.randint(-100, 100))
-        print(player_pos)
 
         direction = Vector2(player_pos) - Vector2(boss_pos)
         angle = random.uniform(-deviation, deviation)
@@ -32,7 +31,6 @@ class Bullet(pygame.sprite.Sprite):
 
         if pygame.sprite.collide_rect(self, player):
             player.health -= 1
-            print(f"Player hit! Health: {player.health}")
             self.kill()
 
         if (self.rect.x < 0 or self.rect.x > configs.SCREEN_WIDTH or
