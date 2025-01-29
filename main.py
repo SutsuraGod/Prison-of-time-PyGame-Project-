@@ -151,6 +151,7 @@ def play():
             
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 stop_sound('in game')
+                stop_sound('boss')
                 pause_menu()
                 play_sound('in game')
         mouse_buttons = pygame.mouse.get_pressed()
@@ -220,10 +221,22 @@ def play():
 
         if configs.player.health <= 0:
             stop_sound('in game')
+            stop_sound('boss')
             main_menu()
 
         if not configs.player.playing:
             game_over()
+
+        if groups.levels.index(groups.current_level) == 11:
+            if groups.current_level.enemies:
+                stop_sound('in game')
+                if not is_sound_playing('boss'):
+                    play_sound('boss')
+            else:
+                stop_sound('boss')
+                if not is_sound_playing('in game'):
+                    play_sound('in game')
+
 
 
 def game_over():
