@@ -202,9 +202,6 @@ def play():
         for i in range(last_len := len(groups.current_level.enemies)):
                 enemy = groups.current_level.enemies[i]
                 enemy.move(configs.player, configs.player.rect, groups.current_level.objects, configs.player.rect.center)
-                if last_len != len(groups.current_level.enemies) and groups.levels.index(groups.current_level) == 11:
-                    main_menu()
-                    break
                 if last_len != len(groups.current_level.enemies):
                     break
                 groups.current_level.enemies[i] = enemy
@@ -224,6 +221,50 @@ def play():
         if configs.player.health <= 0:
             stop_sound('in game')
             main_menu()
+
+        if not configs.player.playing:
+            game_over()
+
+
+def game_over():
+    play_sound('menu')
+    while True:
+        screen.fill('black')
+        mouse_pos = pygame.mouse.get_pos()
+
+        game_over_text = pygame.font.Font(None, 72).render('GAME OVER', True, 'White')
+        game_over_rect = game_over_text.get_rect(center=(500, 140))
+        you_win_text = pygame.font.Font(None, 72).render('You win!', True, 'White')
+        you_win_rect = you_win_text.get_rect(center=(500, 200))
+
+        main_menu_button = Button(pos=(500, 420), text_input='MAIN MENU', font=pygame.font.Font(None, 72),
+                            base_color='White', alt_color='Green')
+        quit_button = Button(pos=(500, 700), text_input='QUIT', font=pygame.font.Font(None, 72),
+                            base_color='White', alt_color='Green')
+        
+        screen.blit(game_over_text, game_over_rect)
+        screen.blit(you_win_text, you_win_rect)
+        
+        for button in [main_menu_button, quit_button]:
+            button.change_color(mouse_pos)
+            button.update(screen=screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if main_menu_button.check_for_input(mouse_pos):
+                    stop_sound('menu')
+                    play_sound('click')
+                    main_menu()
+                if quit_button.check_for_input(mouse_pos):
+                    stop_sound('menu')
+                    play_sound('click')
+                    while is_sound_playing('click'):
+                        pygame.time.wait(10)
+                    terminate()
+        pygame.display.flip()
+
 
 
 if __name__ == "__main__":
