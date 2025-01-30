@@ -26,6 +26,7 @@ class Bullet(pygame.sprite.Sprite):
         self.speed = 7 * random.random() + 3
 
     def update(self, player):
+        '''полет пули'''
         self.rect.x += self.direction.x * self.speed
         self.rect.y += self.direction.y * self.speed
 
@@ -38,4 +39,5 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
     
     def draw(self, screen):
+        '''Отрисовка пули'''
         screen.blit(self.image, self.rect)

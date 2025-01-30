@@ -4,6 +4,7 @@ import pygame
 
 
 def load_sprite(name, colorkey=None):
+    '''Код загрузки спрайта'''
     fullname = os.path.join('data', 'sprites', name)
 
     if not os.path.isfile(fullname):

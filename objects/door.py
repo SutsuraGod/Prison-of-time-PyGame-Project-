@@ -17,12 +17,14 @@ class Door(pygame.sprite.Sprite):
         self.rect.topleft = sdv
 
     def update(self, fight):
+        '''Дверь закрыта, если в комнате все еще есть враги'''
         if fight:
             self.image = self.images[1]
         else:
             self.image = self.images[0]
 
     def get_status(self):
+        '''Возвращает True если дверь открыта, False - если нет'''
         if self.image == self.images[0]:
             return True
         return False

@@ -1,14 +1,13 @@
 import pygame
 import random
-import math
 import configs
-import assets
 import time
 import groups
 from objects.bullet import Bullet
 from pygame.math import Vector2
 
 from PIL import Image, ImageSequence
+
 
 def load_gif_frames(path):
     gif = Image.open(path)
@@ -26,6 +25,7 @@ def load_gif_frames(path):
         pygame_image = pygame.image.fromstring(frame.tobytes(), frame.size, frame.mode)
         frames.append(pygame_image)
     return frames
+
 
 class Boss(pygame.sprite.Sprite):
     def __init__(self, x, y, *groups):
@@ -53,6 +53,7 @@ class Boss(pygame.sprite.Sprite):
         self.min_distance_to_player = 500
 
     def update_animation(self):
+        '''Анимация'''
         self.animation_counter += 1
         if self.animation_counter >= self.animation_speed:
             self.animation_counter = 0
@@ -60,7 +61,8 @@ class Boss(pygame.sprite.Sprite):
             self.image = self.frames[self.current_frame]
             self.mask = pygame.mask.from_surface(self.image)
 
-    def move(self, player, player_rect, obstacles, player_pos):
+    def move(self, player, player_rect, enemy_type, obstacles, player_pos):
+        '''Движение босса и стрельба'''
         if time.time() - self.last_shoot > 3:
             for i in range(7):
                 bullet = Bullet(self.rect.center, player.rect.center)
@@ -95,6 +97,7 @@ class Boss(pygame.sprite.Sprite):
         self.update_animation()
 
     def avoid_obstacle(self, obstacle):
+        '''Обход препятствий'''
         offset = 5.5
         new_direction = self.direction.rotate(135)
         new_position = self.rect.center + new_direction * offset
