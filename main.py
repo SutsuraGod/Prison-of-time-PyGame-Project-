@@ -202,7 +202,12 @@ def play():
             
         for i in range(last_len := len(groups.current_level.enemies)):
                 enemy = groups.current_level.enemies[i]
-                enemy.move(configs.player, configs.player.rect, groups.current_level.objects, configs.player.rect.center)
+                if groups.levels.index(groups.current_level) > 5:
+                    enemy_type = 2
+                else:
+                    enemy_type = 1
+
+                enemy.move(configs.player, configs.player.rect, enemy_type, groups.current_level.objects, configs.player.rect.center)
                 if last_len != len(groups.current_level.enemies):
                     break
                 groups.current_level.enemies[i] = enemy

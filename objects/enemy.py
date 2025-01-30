@@ -14,15 +14,20 @@ class Enemy(pygame.sprite.Sprite):
         self.health = 4
         self.last_enemy_attack_time = 0
         self.cooldown_attack = 1000
-        self.right_images = [assets.load_sprite('run1.png'),
+        self.right_images_v = [assets.load_sprite('run1.png'),
                              assets.load_sprite('run2.png'),
                              assets.load_sprite('run3.png'),
                              assets.load_sprite('run7.png'),
                              assets.load_sprite('run8.png'),
                              ]
-        self.left_images = [pygame.transform.flip(image, True, False) for image in self.right_images]
+        self.left_images_v = [pygame.transform.flip(image, True, False) for image in self.right_images_v]
 
-        self.image = self.right_images[0]
+        self.right_images_m = [pygame.transform.scale(assets.load_sprite('mummy1.png'), (40, 40)),
+                             pygame.transform.scale(assets.load_sprite('mummy2.png'), (40, 40)),
+                             pygame.transform.scale(assets.load_sprite('mummy3.png'), (40, 40))]
+        self.left_images_m = [pygame.transform.flip(image, True, False) for image in self.right_images_m]
+
+        self.image = self.right_images_v[0]
         self.image = pygame.transform.scale(self.image, (100, 100))
         self.counter_images = 0
 
@@ -41,7 +46,11 @@ class Enemy(pygame.sprite.Sprite):
 
         self.state = 'patrol'
 
-    def move(self, player, player_rect, obstacles, player_pos):  # метод для реализации движения врага
+    def move(self, player, player_rect, enemy_type, obstacles, player_pos):  # метод для реализации движения врага
+        self.type = enemy_type
+        if self.type == 2:
+            self.start_speed = 240 // configs.FPS
+            self.speed = 240 // configs.FPS
         if self.health <= 0:
             groups.current_level.enemies.remove(self)
             chance = random.randrange(100)
@@ -64,6 +73,7 @@ class Enemy(pygame.sprite.Sprite):
         
         if self.dot_timer == 0:
             self.speed = self.start_speed
+        print(self.speed)
 
         # рассчитываем расстояние до игрока простым способом
         distance_to_player = ((player_pos[0] - self.rect.x) ** 2 + (player_pos[1] - self.rect.y) ** 2) ** 0.5
@@ -79,20 +89,37 @@ class Enemy(pygame.sprite.Sprite):
                                             player_rect.centery - self.rect.centery)
 
             # Анимация движения
-            if direction[0] < 0:
-                if self.counter_images % 6 == 0:
-                    self.left_images.append(self.left_images.pop(0))
-                    self.image = self.left_images[0]
-                    self.image = pygame.transform.scale(self.image, (100, 100))
-                    self.mask = pygame.mask.from_surface(self.image)
-                self.counter_images += 1
+            if self.type == 1:
+                if direction[0] < 0:
+                    if self.counter_images % 6 == 0:
+                        self.left_images_v.append(self.left_images_v.pop(0))
+                        self.image = self.left_images_v[0]
+                        self.image = pygame.transform.scale(self.image, (100, 100))
+                        self.mask = pygame.mask.from_surface(self.image)
+                    self.counter_images += 1
+                else:
+                    if self.counter_images % 6 == 0:
+                        self.right_images_v.append(self.right_images_v.pop(0))
+                        self.image = self.right_images_v[0]
+                        self.image = pygame.transform.scale(self.image, (100, 100))
+                        self.mask = pygame.mask.from_surface(self.image)
+                    self.counter_images += 1
+
             else:
-                if self.counter_images % 6 == 0:
-                    self.right_images.append(self.right_images.pop(0))
-                    self.image = self.right_images[0]
-                    self.image = pygame.transform.scale(self.image, (100, 100))
-                    self.mask = pygame.mask.from_surface(self.image)
-                self.counter_images += 1
+                if direction[0] < 0:
+                    if self.counter_images % 6 == 0:
+                        self.left_images_m.append(self.left_images_m.pop(0))
+                        self.image = self.left_images_m[0]
+                        self.image = pygame.transform.scale(self.image, (80, 80))
+                        self.mask = pygame.mask.from_surface(self.image)
+                    self.counter_images += 1
+                else:
+                    if self.counter_images % 6 == 0:
+                        self.right_images_m.append(self.right_images_m.pop(0))
+                        self.image = self.right_images_m[0]
+                        self.image = pygame.transform.scale(self.image, (80, 80))
+                        self.mask = pygame.mask.from_surface(self.image)
+                    self.counter_images += 1
 
             # Если враг достиг игрока, останавливаем движение
             if direction.length() <= 10:
@@ -135,20 +162,37 @@ class Enemy(pygame.sprite.Sprite):
                     return
 
             # Анимация движения
-            if self.direction1[0] < 0:
-                if self.counter_images % 6 == 0:
-                    self.left_images.append(self.left_images.pop(0))
-                    self.image = self.left_images[0]
-                    self.image = pygame.transform.scale(self.image, (100, 100))
-                    self.mask = pygame.mask.from_surface(self.image)
-                self.counter_images += 1
+            if self.type == 1:
+                if self.direction1[0] < 0:
+                    if self.counter_images % 6 == 0:
+                        self.left_images_v.append(self.left_images_v.pop(0))
+                        self.image = self.left_images_v[0]
+                        self.image = pygame.transform.scale(self.image, (100, 100))
+                        self.mask = pygame.mask.from_surface(self.image)
+                    self.counter_images += 1
+                else:
+                    if self.counter_images % 6 == 0:
+                        self.right_images_v.append(self.right_images_v.pop(0))
+                        self.image = self.right_images_v[0]
+                        self.image = pygame.transform.scale(self.image, (100, 100))
+                        self.mask = pygame.mask.from_surface(self.image)
+                    self.counter_images += 1
+
             else:
-                if self.counter_images % 6 == 0:
-                    self.right_images.append(self.right_images.pop(0))
-                    self.image = self.right_images[0]
-                    self.image = pygame.transform.scale(self.image, (100, 100))
-                    self.mask = pygame.mask.from_surface(self.image)
-                self.counter_images += 1
+                if self.direction1[0] < 0:
+                    if self.counter_images % 6 == 0:
+                        self.left_images_m.append(self.left_images_m.pop(0))
+                        self.image = self.left_images_m[0]
+                        self.image = pygame.transform.scale(self.image, (80, 80))
+                        self.mask = pygame.mask.from_surface(self.image)
+                    self.counter_images += 1
+                else:
+                    if self.counter_images % 6 == 0:
+                        self.right_images_m.append(self.right_images_m.pop(0))
+                        self.image = self.right_images_m[0]
+                        self.image = pygame.transform.scale(self.image, (80, 80))
+                        self.mask = pygame.mask.from_surface(self.image)
+                    self.counter_images += 1
             #
 
 
