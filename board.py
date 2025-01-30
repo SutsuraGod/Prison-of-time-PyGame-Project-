@@ -1,4 +1,3 @@
-import pygame
 import configs
 from objects.barrier import Barrier
 from objects.chest import Chest
@@ -6,10 +5,8 @@ from objects.door import Door
 from objects.enemy import Enemy
 from objects.player import Player
 from objects.wall import Wall
-from objects.bow import Bow
-from objects.void import Void
-from objects.boss1 import Boss
-from groups import items, collis, player_sprites, levels, doors, chests_sprites, enemy_sprites
+from objects.boss import Boss
+from groups import items, collis, player_sprites, doors, chests_sprites, enemy_sprites
 import groups
 from random import sample
 
@@ -51,6 +48,7 @@ class Level():
                 elif map[lay][pos] == 'B':
                     self.enemies.append(Boss(sdv[0], sdv[1], (collis, enemy_sprites, all_sprites)))
     def draw(self):
+        '''Отрисовка объектов комнаты'''
         for obj in self.objects:
             self.screen.blit(obj.image, obj.rect)
         for enemy in self.enemies:
@@ -67,6 +65,7 @@ class Level():
 
 
 def generate_level(screen, all_sprites):
+    '''Генерация уровня'''
     rooms = sample(range(1, 11), 8)
     for i in range(len(rooms)):
         if i == 0:
@@ -80,21 +79,3 @@ def generate_level(screen, all_sprites):
         if i == len(rooms) - 1:
             groups.levels.append(Level(f"data/levels/save_levels/chest_room_2.txt", screen, all_sprites))
     groups.levels.append(Level(f'data/levels/save_levels/boss_fight_room.txt', screen, all_sprites))
-        
-
-if __name__ == "__main__":
-
-    pygame.init()
-    screen = pygame.display.set_mode((configs.SCREEN_WIDTH, configs.SCREEN_HEIGHT), pygame.RESIZABLE)
-    screen.fill('gray')
-
-    running = True
-    lv = Level(r"data\levels\level_46_25.txt", screen)
-    while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-            
-            screen.fill('gray')
-            lv.draw()
-            pygame.display.flip()

@@ -48,6 +48,7 @@ class Player(pygame.sprite.Sprite):
         self.playing = True
 
     def update(self, mouse_pos):
+        '''Разворот спрайта игрока и уничтожение персонажа в случае потери полного запаса здоровье'''
         if self.health <= 0:
             self.kill()
 
@@ -64,6 +65,7 @@ class Player(pygame.sprite.Sprite):
             self.counter_images += 1
 
     def moving_event(self, keys):
+        '''Передвижение игрока и обработка столкновений'''
         was_x, was_y = self.rect.x, self.rect.y
         dx, dy = 0, 0
 
@@ -100,7 +102,7 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y = was_y
                 break
                 
-        for door in groups.current_level.doors:
+        for door in groups.current_level.doors: # проверка столкновений с дверями и переход в другую комнату
             if pygame.sprite.collide_rect(self, door):
                 if door.get_status():
                     if len(groups.levels) > groups.levels.index(groups.current_level) + 1 and configs.SCREEN_WIDTH // 2 < self.rect.x:
@@ -115,7 +117,7 @@ class Player(pygame.sprite.Sprite):
                     groups.spell_sprites.empty()
                     break
 
-        for item in groups.current_level.items:
+        for item in groups.current_level.items: # проверка столкновений с предметами и их подбор
             if pygame.sprite.collide_rect(self, item):
                 if item.type == 'speed' and self.max_speed > self.v:
                     self.set_speed(30)
@@ -132,18 +134,22 @@ class Player(pygame.sprite.Sprite):
                         play_sound('item')
 
     def update_position(self, new_x, new_y):
+        '''Перенос в указанную точку'''
         self.rect.x = new_x
         self.rect.y = new_y
 
     def set_speed(self, new_speed):
+        '''Изменение скорости персонажа при подборе улучшения скорости'''
         if self.v < self.max_speed:
             self.v += (new_speed / configs.FPS) * math.exp(-self.step_speed)
 
     def set_health(self, new_health):
+        '''Изменение запаса здоровья персонажа при подборе улучшения здоровья'''
         if self.health < self.max_health:
             self.health += new_health
 
     def set_spell(self, new_spell):
+        '''Изменение текущей способности при ее подборе'''
         if self.current_spell != '':
             if self.direction:
                 groups.current_level.items.append(
@@ -158,6 +164,7 @@ class Player(pygame.sprite.Sprite):
         self.current_spell = new_spell
     
     def get_collision_side(self, obstacle_rect):
+        '''Получение стороны, на которой произошло столкновение'''
         # Вычисляем разницу между сторонами
         dx = (self.rect.centerx - obstacle_rect.centerx - 1)
         dy = (self.rect.centery - obstacle_rect.centery - 1)

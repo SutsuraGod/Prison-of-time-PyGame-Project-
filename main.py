@@ -7,14 +7,15 @@ from objects.fireball import Fireball
 from objects.icespell import Icespell
 from objects.bullet import Bullet
 import groups
-from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites, levels, chests_sprites
-from groups import spell_sprites, enemy_sprites, collis, doors
+from groups import all_sprites, player_sprites, bow_sprites, arrow_sprites
+from groups import spell_sprites, doors
 from board import generate_level
 from button import Button
 from sound_manager import play_sound, stop_sound, is_sound_playing
 
 
 def default_start():
+    '''Полное очищение всего для начала новой игры'''
     configs.player = None
     groups.all_sprites.empty()
     groups.player_sprites.empty()
@@ -32,6 +33,7 @@ def default_start():
 
 
 def print_hp(screen, player):
+    '''Процесс отрисовки запаса здоровья'''
     font = pygame.font.Font(None, 36)
     text_surface = font.render(f'{player.health}', True, (0, 0, 0))
     screen.blit(text_surface, (50, 50))
@@ -41,11 +43,13 @@ def print_hp(screen, player):
 
 
 def terminate():
+    '''Прекращение работы приложения'''
     pygame.quit()
     sys.exit()
 
 
 def main_menu():
+    '''Главное меню'''
     play_sound('menu')
     while True:
         screen.fill('black')
@@ -83,6 +87,7 @@ def main_menu():
 
 
 def pause_menu():
+    '''Меню паузы'''
     play_sound('menu')
     running = True
     while running:
@@ -135,6 +140,7 @@ def pause_menu():
 
 
 def play():
+    '''Код игрового процесса'''
     play_sound('in game')
     default_start()
     generate_level(screen, all_sprites)
@@ -202,8 +208,10 @@ def play():
             
         for i in range(last_len := len(groups.current_level.enemies)):
                 enemy = groups.current_level.enemies[i]
-                if groups.levels.index(groups.current_level) > 5:
+                if 11 > groups.levels.index(groups.current_level) > 5:
                     enemy_type = 2
+                elif groups.levels.index(groups.current_level) == 11:
+                    enemy_type = 3
                 else:
                     enemy_type = 1
 
@@ -245,6 +253,7 @@ def play():
 
 
 def game_over():
+    '''Меню окончания игры'''
     play_sound('menu')
     while True:
         screen.fill('black')

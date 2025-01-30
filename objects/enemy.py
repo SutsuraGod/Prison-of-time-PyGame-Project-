@@ -50,7 +50,9 @@ class Enemy(pygame.sprite.Sprite):
         self.type = enemy_type
         if self.type == 2:
             self.start_speed = 240 // configs.FPS
-            self.speed = 240 // configs.FPS
+            if self.dot_timer == 0:
+                self.speed = 240 // configs.FPS
+
         if self.health <= 0:
             groups.current_level.enemies.remove(self)
             chance = random.randrange(100)
@@ -73,7 +75,6 @@ class Enemy(pygame.sprite.Sprite):
         
         if self.dot_timer == 0:
             self.speed = self.start_speed
-        print(self.speed)
 
         # рассчитываем расстояние до игрока простым способом
         distance_to_player = ((player_pos[0] - self.rect.x) ** 2 + (player_pos[1] - self.rect.y) ** 2) ** 0.5

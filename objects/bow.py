@@ -16,6 +16,7 @@ class Bow(pygame.sprite.Sprite):
         super().__init__(*groups)
 
     def update(self, player_pos, mouse_pos):
+        '''Поворот лука в сторону мыши'''
         mouse_x, mouse_y = mouse_pos
         self.start_rect.center = player_pos[0], player_pos[1] + 10
         self.angle = math.degrees(math.atan2(mouse_y - self.start_rect.centery, mouse_x - self.start_rect.centerx))

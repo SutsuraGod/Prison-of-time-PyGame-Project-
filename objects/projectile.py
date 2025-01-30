@@ -23,6 +23,7 @@ class Projectile(pygame.sprite.Sprite):
         self.dmg = 1
     
     def update(self):
+        '''Полет снаряда и его уничтожение при столкновении с препятствием'''
         if (self.cur_x >= configs.CELL_SIZE and self.cur_x <= configs.SCREEN_WIDTH - configs.CELL_SIZE
                 and self.cur_y >= configs.CELL_SIZE and self.cur_y <= configs.SCREEN_HEIGHT - configs.CELL_SIZE):
             
