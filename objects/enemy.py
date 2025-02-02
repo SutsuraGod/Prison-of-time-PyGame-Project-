@@ -224,8 +224,6 @@ class Enemy(pygame.sprite.Sprite):
         new_direction = direction.rotate(145)  # Поворот на 135 градусов
         new_position = self.rect.center + new_direction * offset
 
-
-
         if new_position[0] <= 40:  # < 80
             new_position[0] = 70
             new_direction[0] *= -1

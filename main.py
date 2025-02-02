@@ -13,9 +13,11 @@ from board import generate_level
 from button import Button
 from sound_manager import play_sound, stop_sound, is_sound_playing
 import csv
+import os
 
 
 def save_score():
+    '''Функция для записи очков в score.csv'''
     global max_score
     max_score = max([max_score, last_score])
 
@@ -354,6 +356,11 @@ if __name__ == "__main__":
     pygame.display.set_caption('Prison of Time')
     clock = pygame.time.Clock()
     ATTACK_EVENT = pygame.USEREVENT + 1
+    if not os.path.isfile('score.csv'):
+        with open('score.csv', 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file, delimiter=';', quotechar="'")
+            writer.writerows([['last_score', 'max_score'], [0, 0]])
+
     with open('score.csv', 'r', encoding='utf-8') as file:
         reader = csv.reader(file, delimiter=';', quotechar="'")
         for i, num in enumerate(reader):
