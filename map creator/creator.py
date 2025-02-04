@@ -91,7 +91,7 @@ class Board():
 
 def main():
     running = True
-    board = Board(46, 25)
+    board = Board(25, 21)
     brush = None
     while running:
         for event in pygame.event.get():
